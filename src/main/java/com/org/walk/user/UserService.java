@@ -16,4 +16,6 @@ public interface UserService {
 
     public void deleteUser(UserDto chiefDto) throws Exception;
 
+    public UserDto getUserByName(String userName) throws Exception;
+
 }

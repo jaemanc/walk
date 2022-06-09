@@ -2,6 +2,7 @@ package com.org.walk.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUser(long id) throws Exception {
 
-        return false;
+        return userRepositoryCustom.exist(id);
+
     }
 
     @Override
@@ -31,8 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(long id) throws Exception {
-
-        //UserEntity userEntity = userRepository.getUserByName(id);
 
         UserEntity userEntity = userRepository.getUserById(id);
 
@@ -72,5 +72,18 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(userDto.getId());
 
+    }
+
+    @Override
+    public UserDto getUserByName(String userName) throws Exception {
+        UserEntity userEntity = userRepository.getUserByName(userName);
+
+        if (ObjectUtils.isEmpty(userEntity)) {
+            return null;
+        }
+
+        UserDto userDto = UserMapper.mapper.toDto(userEntity);
+
+        return userDto;
     }
 }
