@@ -5,6 +5,7 @@ import com.org.walk.file.FileEntity;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -29,13 +30,19 @@ public class UserDto {
 
     private Set<FileDto> files;
 
+    private Character loginYn;
+
+    private Date lastLogin;
+
     @QueryProjection
-    public UserDto(long userId, String name, String email, String address, String phone, Set<FileDto> files) {
+    public UserDto(Long userId, String name, String email, String address, String phone, Set<FileDto> files, Character loginYn, Date lastLogin) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.address = address;
         this.phone = phone;
         this.files = files;
+        this.loginYn = loginYn;
+        this.lastLogin = lastLogin;
     }
 }

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 @Api(tags = {"LoginController"})
 @Controller
 @RequestMapping("/login")
@@ -46,12 +49,19 @@ public class LoginController {
 
             jwt = loginService.login(userdto);
 
+            userService.putUser(userdto);
+
             user = userService.getUser(userdto.getUserId());
+
 
             header.add("jwt",jwt);
 
         } catch (Exception e) {
-            e.printStackTrace();
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            e.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
             log_error.error(e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

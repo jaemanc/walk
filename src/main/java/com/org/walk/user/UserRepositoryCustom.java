@@ -49,6 +49,8 @@ public class UserRepositoryCustom {
                         ,userEntity.address
                         ,userEntity.phone
                         ,null
+                        ,userEntity.loginYn
+                        ,userEntity.lastLogin
                 ))
                 .from(userEntity)
                 .where(builder)

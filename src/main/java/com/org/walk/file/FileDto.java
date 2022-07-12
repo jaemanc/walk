@@ -24,7 +24,7 @@ public class FileDto {
 
     private String fileLoc;
 
-    private char isDeleted;
+    private Character isDeleted;
 
     private Long userId;
 
