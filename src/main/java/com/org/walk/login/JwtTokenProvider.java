@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Component
@@ -24,7 +22,7 @@ public class JwtTokenProvider {
     UserService userService;
 
 
-    private String secretKey = "Son of iksan";
+    private String secretKey = "Son_of_iksan";
 
     // 토큰 유효시간 30분
     private long tokenValidTime = 60 * 60 * 1000L;
@@ -37,6 +35,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
     public String createToken(UserDto userDto) {
+
         Claims claims = Jwts.claims().setSubject(userDto.getName()); // JWT payload 에 저장되는 정보단위
         // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
 
@@ -69,6 +68,7 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
