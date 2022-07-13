@@ -18,5 +18,4 @@ public interface EntityMapper<D, E> {
     Set<D> toDtoSet(final Set<E> Entity);
 
 
-
 }

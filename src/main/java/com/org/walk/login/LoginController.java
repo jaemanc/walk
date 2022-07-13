@@ -43,7 +43,7 @@ public class LoginController {
 
         UserDto user = null;
         String jwt = "";
-        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+
 
         try {
 
@@ -52,9 +52,6 @@ public class LoginController {
             userService.putUser(userdto);
 
             user = userService.getUser(userdto.getUserId());
-
-
-            header.add("jwt",jwt);
 
         } catch (Exception e) {
 
@@ -66,7 +63,7 @@ public class LoginController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<UserDto>(user, header, HttpStatus.OK);
+        return new ResponseEntity<UserDto>(user, HttpStatus.OK);
     }
 
 

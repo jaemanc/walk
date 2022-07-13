@@ -9,6 +9,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -39,16 +41,22 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userDto.getName()); // JWT payload 에 저장되는 정보단위
         // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
 
+        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+
+        claims.put("id", userDto.getUserId());
         claims.put("name",userDto.getName());
 
         Date now = new Date();
-        return Jwts.builder()
+
+        String jwt = Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
+
+        return jwt;
     }
 
     // 토큰에서 회원 정보 추출
