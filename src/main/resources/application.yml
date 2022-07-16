@@ -11,6 +11,8 @@ server:
 
 # local mysql test db
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:mysql://localhost:3306/walk?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
@@ -31,6 +33,7 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
+
 
 
 

@@ -1,49 +1,47 @@
 package com.org.walk.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.walk.user.UserServiceImpl;
+import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.org.walk.login.JwtTokenProvider;
 import com.org.walk.user.UserDto;
 import com.org.walk.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
+
     private Logger log_walk = LoggerFactory.getLogger("com.walk");
 
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-    @Autowired
-    UserService userService;
+    @Resource(name = "userServiceImpl")
+    UserServiceImpl userService;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        System.out.println(" interceptor check...!!");
-        String jwt = jwtTokenProvider.resolveToken(request);
+        String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        System.out.println(" jwt : " + jwt);
+        long userId = jwtTokenProvider.getUserId(jwt);
 
-        String userNm = (String) jwtTokenProvider.getUserName(jwt);
+        System.out.println(" header jwt : " + jwt + " user id : " + userId);
 
-        System.out.println( " user name : " + userNm);
-
-        UserDto userDto = userService.getUserByName(userNm);
-
-        System.out.println(new ObjectMapper().writeValueAsString(userDto));
+        UserDto userDto = userService.getUser(userId);
 
         if (ObjectUtils.isEmpty(userDto)) {
             System.out.println(" User Not found!!!  ");
@@ -51,7 +49,7 @@ public class Interceptor implements HandlerInterceptor {
         }
 
         // 만료 시간 검증
-        if ( jwtTokenProvider.validateToken(jwt)) {
+        if ( !jwtTokenProvider.validateToken(jwt)) {
             System.out.println(" token expired...");
             return false;
         }
@@ -61,7 +59,7 @@ public class Interceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        System.out.println(" post handle run... ");
+        //System.out.println(" post handle run... ");
     }
 
 }

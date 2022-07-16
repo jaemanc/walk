@@ -1,5 +1,7 @@
 package com.org.walk.user;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 public interface UserService {
@@ -8,6 +10,7 @@ public interface UserService {
 
     public List<UserDto> getUserList(String keyword) throws Exception;
 
+    @Transactional
     public UserDto getUser(long id) throws Exception;
 
     public UserDto postUser(UserDto chiefDto) throws Exception;

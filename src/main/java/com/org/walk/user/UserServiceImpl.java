@@ -34,9 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(long id) throws Exception {
-
         UserEntity userEntity = userRepository.getUserByUserId(id);
-
         UserDto user = UserMapper.mapper.toDto(userEntity);
 
         return user;

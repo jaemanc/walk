@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,9 +45,13 @@ public class LoginController {
         String jwt = "";
 
 
+        HttpHeaders httpHeaders;
         try {
 
             jwt = loginService.login(userdto);
+
+            httpHeaders = new HttpHeaders();
+            httpHeaders.add("authrozation", jwt);
 
             userService.putUser(userdto);
 
@@ -62,7 +67,7 @@ public class LoginController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<UserDto>(user, HttpStatus.OK);
+        return new ResponseEntity<UserDto>(user, httpHeaders, HttpStatus.OK);
     }
 
 

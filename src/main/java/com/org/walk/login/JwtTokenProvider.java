@@ -7,8 +7,10 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -18,11 +20,8 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Component
+@Service
 public class JwtTokenProvider {
-
-    @Autowired
-    UserService userService;
-
 
     private String secretKey = "Son_of_iksan";
 
@@ -61,19 +60,30 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserName(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token).getBody().getSubject();
     }
+
+    public long getUserId(String token) {
+        Object id = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token).getBody().get("id");
+
+        String stringToConvert = String.valueOf(id);
+        Long convertedLong = Long.parseLong(stringToConvert);
+        long _id = convertedLong;
+
+        return _id;
+    }
+
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
 
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader(HttpHeaders.AUTHORIZATION);
     }
 
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             e.printStackTrace();
