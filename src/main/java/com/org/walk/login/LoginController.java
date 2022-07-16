@@ -28,7 +28,6 @@ public class LoginController {
     private final Logger log_error = LogManager.getLogger("com.error");
     private final Logger log_walk = LogManager.getLogger("com.walk");
 
-
     @Autowired
     LoginService loginService;
 
