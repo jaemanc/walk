@@ -13,6 +13,8 @@ public interface UserService {
     @Transactional
     public UserDto getUser(long id) throws Exception;
 
+    public UserDto getUserByEmail(String userEmail) throws Exception;
+
     public UserDto postUser(UserDto chiefDto) throws Exception;
 
     public void putUser(UserDto chiefDto) throws Exception;
@@ -22,4 +24,6 @@ public interface UserService {
     public UserDto getUserByName(String userName) throws Exception;
 
     public List<UserDto> getUserFiles(long id) throws Exception;
+
+    public boolean validateUser(UserDto userdto) throws Exception;
 }

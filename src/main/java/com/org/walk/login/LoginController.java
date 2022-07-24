@@ -1,5 +1,6 @@
 package com.org.walk.login;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.user.UserDto;
 import com.org.walk.user.UserService;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,16 +46,19 @@ public class LoginController {
         UserDto user = null;
         String jwt = "";
 
-
         HttpHeaders httpHeaders;
         try {
-
-            jwt = loginService.login(userdto);
+            System.out.println( " 로그인 요청 값 : " + new ObjectMapper().writeValueAsString(userdto));
+            jwt = loginService.loginByEmail(userdto);
 
             httpHeaders = new HttpHeaders();
             httpHeaders.add("authrozation", jwt);
 
-            userService.putUser(userdto);
+            userdto = userService.getUserByEmail(userdto.getEmail());
+
+            if (ObjectUtils.isEmpty(userdto)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
             user = userService.getUser(userdto.getUserId());
 

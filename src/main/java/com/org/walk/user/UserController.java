@@ -49,6 +49,13 @@ public class UserController {
         UserDto user = null;
 
         try {
+            // 22 07 24
+            // email 중복 등록 제거.
+            boolean flag = userService.validateUser(userdto);
+
+            if (!flag) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
 
             user = userService.postUser(userdto);
 

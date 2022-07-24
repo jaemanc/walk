@@ -19,6 +19,11 @@ public class LoginServiceImpl implements LoginService {
     public String login(UserDto userDto) throws Exception {
 
         UserDto user = userService.getUser(userDto.getUserId());
+
+        if (ObjectUtils.isEmpty(user)) {
+            return null;
+        }
+
         String jwt = "";
 
         if (ObjectUtils.isEmpty(user)) {
@@ -28,5 +33,20 @@ public class LoginServiceImpl implements LoginService {
         jwt = jwtTokenProvider.createToken(user);
 
         return jwt;
+    }
+
+    @Override
+    public String loginByEmail(UserDto userDto) throws Exception {
+        UserDto user = userService.getUserByEmail(userDto.getEmail());
+        String jwt = "";
+
+        if (ObjectUtils.isEmpty(user)) {
+            return null;
+        }
+
+        jwt = jwtTokenProvider.createToken(user);
+
+        return jwt;
+
     }
 }

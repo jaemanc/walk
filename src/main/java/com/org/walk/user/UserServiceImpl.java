@@ -41,11 +41,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserByEmail(String userEmail) throws Exception {
+        UserEntity userEntity = userRepository.getUserByEmail(userEmail);
+        UserDto user = UserMapper.mapper.toDto(userEntity);
+
+        return user;
+    }
+
+    @Override
     public UserDto postUser(UserDto userDto) throws Exception {
 
         UserEntity userEntity = UserMapper.mapper.toEntity(userDto);
 
-        System.out.println(" user entity내부에서 file 의 id를 따로 조회하는듯..? " + new ObjectMapper().writeValueAsString(userEntity));
 
         userRepository.save(userEntity);
 
@@ -96,5 +103,17 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userDtos = UserMapper.mapper.toDtoList(userEntities);
 
         return userDtos;
+    }
+
+    @Override
+    public boolean validateUser(UserDto userDto) throws Exception {
+
+        UserEntity userEntity = userRepository.getUserByEmail(userDto.getEmail());
+
+        if (ObjectUtils.isEmpty(userEntity)) {
+            return true;
+        }
+
+        return false;
     }
 }
