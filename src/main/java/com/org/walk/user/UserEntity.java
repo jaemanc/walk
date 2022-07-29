@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
@@ -57,16 +58,20 @@ public class UserEntity {
     @Column(name="last_login")
     private Date lastLogin;
 
+    @Column(name="date_birth")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date dateBirth;
+
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private Set<FileEntity> files;
 
-    public UserEntity(Long userId, String password, String name, String address, String phone, String email, Set<FileEntity> files, Character loginYn, Date lastLogin) {
+    public UserEntity(Long userId, String password, String name, String address, String phone, String email, Set<FileEntity> files, Character loginYn, Date lastLogin, Date dateBirth) {
     }
 
     @Builder
-    public static UserEntity createUser(Long userId, String password, String name, String address, String phone, String email, Set<FileEntity> files, Character loginYn, Date lastLogin){
-        return new UserEntity(userId, password, name, address, phone, email, files, loginYn, lastLogin);
+    public static UserEntity createUser(Long userId, String password, String name, String address, String phone, String email, Set<FileEntity> files, Character loginYn, Date lastLogin, Date dateBirth){
+        return new UserEntity(userId, password, name, address, phone, email, files, loginYn, lastLogin, dateBirth);
     }
 
     public void updateUser(UserDto userDto) {
@@ -94,10 +99,8 @@ public class UserEntity {
         if (!ObjectUtils.isEmpty(userDto.getLastLogin())) {
             this.lastLogin = userDto.getLastLogin();
         }
-
-
-
-
+        if (!ObjectUtils.isEmpty(userDto.getDateBirth())) {
+            this.dateBirth = userDto.getDateBirth();
+        }
     }
-
 }
