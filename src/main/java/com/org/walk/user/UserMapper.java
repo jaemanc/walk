@@ -2,6 +2,7 @@ package com.org.walk.user;
 
 import com.org.walk.util.EntityMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

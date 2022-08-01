@@ -25,7 +25,7 @@ public class JwtTokenProvider {
 
     private String secretKey = "Son_of_iksan";
 
-    // 토큰 유효시간 30분
+    // 토큰 유효시간 60분
     private long tokenValidTime = 60 * 60 * 1000L;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.

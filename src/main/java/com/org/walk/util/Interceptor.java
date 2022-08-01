@@ -1,6 +1,8 @@
 package com.org.walk.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.user.UserServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +17,16 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.thymeleaf.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
@@ -37,7 +44,10 @@ public class Interceptor implements HandlerInterceptor {
 
         String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        System.out.println(" jwt value : " + jwt);
+
         long userId = jwtTokenProvider.getUserId(jwt);
+
 
         System.out.println(" header jwt : " + jwt + " user id : " + userId);
 

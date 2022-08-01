@@ -51,6 +51,7 @@ public class UserRepositoryCustom {
                         ,null
                         ,userEntity.loginYn
                         ,userEntity.lastLogin
+                        ,userEntity.dateBirth
                 ))
                 .from(userEntity)
                 .where(builder)

@@ -1,5 +1,6 @@
 package com.org.walk.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -21,12 +22,11 @@ public class UserController {
     UserServiceImpl userService;
 
 
-    @GetMapping("/{keyword}")
+    @GetMapping("/search/{keyword}")
     @ApiOperation(value = "get users", notes = "유저 검색")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")
     public ResponseEntity<?> getUserList(
-        @RequestParam String keyword
-    ) {
+            @PathVariable String keyword) {
         List<UserDto> users = null;
         try {
 
@@ -64,16 +64,14 @@ public class UserController {
             return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<UserDto>(user, HttpStatus.OK);
-
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     @ApiOperation(value = "get user", notes = "유저 조회")
     @ApiImplicitParam(name="id", dataType = "long", value = "사용자 아이디", example = "0")
     public ResponseEntity<?> getUser(
-            @RequestParam long id
-    ) {
-        UserDto user = null;
+            @PathVariable long id) {
+        UserDto user = new UserDto();
         try {
 
             user = userService.getUser(id);
@@ -86,16 +84,16 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<List<UserDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<UserDto>(user, HttpStatus.OK);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
     @ApiOperation(value = "put user", notes = "유저 수정")
+    @PutMapping("/{id}")
     @ApiImplicitParam(name = "id" , dataType= "long", value ="사용자 아이디", example = "0")
     public ResponseEntity<UserDto> putUser(
-            @RequestParam long id
-        , @RequestBody UserDto userDto
-    ) {
+            @RequestBody UserDto userDto,
+            @PathVariable long id) {
         UserDto user = null;
 
         try {
@@ -123,8 +121,7 @@ public class UserController {
     @ApiOperation(value = "user delete" , notes = "사용자 삭제")
     @ApiImplicitParam(name = "id" , dataType= "long", value ="사용자 아이디", example = "0")
     public ResponseEntity<?> deleteUser(
-            @RequestParam long id
-    ){
+            @PathVariable long id){
 
         UserDto userDto = null;
         try {
@@ -150,8 +147,7 @@ public class UserController {
     @ApiOperation(value = "get user files" , notes = "사용자 파일 조회.")
     @ApiImplicitParam(name = "id" , dataType= "long", value ="사용자 아이디", example = "0")
     public ResponseEntity<?> getUserFiles(
-            @RequestParam long id
-    ){
+            @PathVariable long id){
 
         UserDto userDto = null;
         try {
