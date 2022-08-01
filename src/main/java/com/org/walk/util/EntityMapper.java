@@ -1,5 +1,7 @@
 package com.org.walk.util;
 
+import org.mapstruct.Mapping;
+
 import java.util.List;
 import java.util.Set;
 

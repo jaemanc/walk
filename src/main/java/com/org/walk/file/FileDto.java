@@ -1,5 +1,6 @@
 package com.org.walk.file;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class FileDto {
 
     private Long fileSize;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date uploadDate;
 
     private String fileLoc;

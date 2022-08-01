@@ -31,19 +31,19 @@ public class UserEntity {
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="password")
+    @Column(name="password", length = 255)
     private String password;
 
-    @Column(name="name")
+    @Column(name="name", length = 20)
     private String name;
 
-    @Column(name="address")
+    @Column(name="address", length = 100)
     private String address;
 
-    @Column(name="phone")
+    @Column(name="phone", length = 20)
     private String phone;
 
-    @Column(name="email")
+    @Column(name="email", length = 50)
     private String email;
 
     @CreatedDate
@@ -59,7 +59,6 @@ public class UserEntity {
     private Date lastLogin;
 
     @Column(name="date_birth")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date dateBirth;
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)

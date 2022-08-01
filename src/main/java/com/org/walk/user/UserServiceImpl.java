@@ -1,6 +1,7 @@
 package com.org.walk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUser(long id) throws Exception {
         UserEntity userEntity = userRepository.getUserByUserId(id);
+
         UserDto user = UserMapper.mapper.toDto(userEntity);
 
         return user;

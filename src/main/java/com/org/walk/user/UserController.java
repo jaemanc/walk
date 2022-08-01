@@ -22,7 +22,7 @@ public class UserController {
     UserServiceImpl userService;
 
 
-   /* @GetMapping("/{keyword}")
+    @GetMapping("/search/{keyword}")
     @ApiOperation(value = "get users", notes = "유저 검색")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")
     public ResponseEntity<?> getUserList(
@@ -64,14 +64,14 @@ public class UserController {
             return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<UserDto>(user, HttpStatus.OK);
-    }*/
+    }
 
     @GetMapping(value = "/{id}")
     @ApiOperation(value = "get user", notes = "유저 조회")
     @ApiImplicitParam(name="id", dataType = "long", value = "사용자 아이디", example = "0")
     public ResponseEntity<?> getUser(
             @PathVariable long id) {
-        UserDto user = null;
+        UserDto user = new UserDto();
         try {
 
             user = userService.getUser(id);
@@ -84,10 +84,11 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<List<UserDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<UserDto>(user, HttpStatus.OK);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-   /* @ApiOperation(value = "put user", notes = "유저 수정")
+    @ApiOperation(value = "put user", notes = "유저 수정")
     @PutMapping("/{id}")
     @ApiImplicitParam(name = "id" , dataType= "long", value ="사용자 아이디", example = "0")
     public ResponseEntity<UserDto> putUser(
@@ -167,6 +168,6 @@ public class UserController {
             return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<UserDto>(HttpStatus.OK);
-    }*/
+    }
 
 }
