@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CoordinatesDtro {
+public class CoordinatesDto {
 
     private long coordinatesId;
 

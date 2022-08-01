@@ -5,6 +5,8 @@ import com.org.walk.user.UserEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class FileController {
 
     @Autowired
     FileServiceImpl fileService;
+
+    private final Logger log_error = LogManager.getLogger("com.error");
+    private final Logger log_file = LogManager.getLogger("com.file");
 
     @GetMapping("")
     @ApiOperation(value = "upload files", notes = " 파일 업로드 ")
