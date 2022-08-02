@@ -5,6 +5,7 @@ import com.org.walk.user.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -41,6 +42,18 @@ public class CourseEntity {
     @Comment("사용자 ID")
     private long userId;
 
+    @Column(name="is_deleted")
+    @Comment("삭제 여부")
+    private Character isDeleted;
+
+    @Column(name="updater", length = 20)
+    @Comment("수정자")
+    private String updater;
+
+    @LastModifiedDate
+    @Column(name="updated_at")
+    private Date updatedAt;
+
     @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", insertable = false, updatable = false)
     private UserEntity user;
@@ -53,4 +66,18 @@ public class CourseEntity {
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private Set<FileEntity> files;
 
+    @Builder
+    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files) {
+        this.courseId = courseId;
+        this.coordinates_id = coordinates_id;
+        this.courseName = courseName;
+        this.courseKeyword = courseKeyword;
+        this.userId = userId;
+        this.isDeleted = isDeleted;
+        this.updater = updater;
+        this.updatedAt = updatedAt;
+        this.user = user;
+        this.coordinates = coordinates;
+        this.files = files;
+    }
 }

@@ -21,7 +21,6 @@ public class UserController {
     @Autowired
     UserServiceImpl userService;
 
-
     @GetMapping("/search/{keyword}")
     @ApiOperation(value = "get users", notes = "유저 검색")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")

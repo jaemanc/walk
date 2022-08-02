@@ -6,24 +6,24 @@ import java.util.List;
 
 public interface UserService {
 
-    public boolean isUser(long id) throws Exception;
+    boolean isUser(long id) throws Exception;
 
-    public List<UserDto> getUserList(String keyword) throws Exception;
+    List<UserDto> getUserList(String keyword) throws Exception;
 
     @Transactional
-    public UserDto getUser(long id) throws Exception;
+    UserDto getUser(long id) throws Exception;
 
-    public UserDto getUserByEmail(String userEmail) throws Exception;
+    UserDto getUserByEmail(String userEmail) throws Exception;
 
-    public UserDto postUser(UserDto chiefDto) throws Exception;
+    UserDto postUser(UserDto chiefDto) throws Exception;
 
-    public void putUser(UserDto chiefDto) throws Exception;
+    void putUser(UserDto chiefDto) throws Exception;
 
-    public void deleteUser(UserDto chiefDto) throws Exception;
+    void deleteUser(UserDto chiefDto) throws Exception;
 
-    public UserDto getUserByName(String userName) throws Exception;
+    UserDto getUserByName(String userName) throws Exception;
 
-    public List<UserDto> getUserFiles(long id) throws Exception;
+    List<UserDto> getUserFiles(long id) throws Exception;
 
-    public boolean validateUser(UserDto userdto) throws Exception;
+    boolean validateUser(UserDto userdto) throws Exception;
 }
