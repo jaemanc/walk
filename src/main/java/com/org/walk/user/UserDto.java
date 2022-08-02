@@ -30,7 +30,7 @@ public class UserDto {
 
     private String phone;
 
-    private Set<FileDto> files;
+    private Set<FileDto> file;
 
     private Character loginYn;
 
@@ -41,13 +41,13 @@ public class UserDto {
     private Date dateBirth;
 
     @QueryProjection
-    public UserDto(Long userId, String name, String email, String address, String phone, Set<FileDto> files, Character loginYn, Date lastLogin, Date dateBirth) {
+    public UserDto(Long userId, String name, String email, String address, String phone, Set<FileDto> file, Character loginYn, Date lastLogin, Date dateBirth) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.address = address;
         this.phone = phone;
-        this.files = files;
+        this.file = file;
         this.loginYn = loginYn;
         this.lastLogin = lastLogin;
         this.dateBirth = dateBirth;

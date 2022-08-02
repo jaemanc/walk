@@ -13,10 +13,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepositoryCustom userRepositoryCustom;
+    UserRepositoryCustom userRepositoryCustom;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Override
     public boolean isUser(long id) throws Exception {

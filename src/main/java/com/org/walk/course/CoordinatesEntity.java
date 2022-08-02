@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,10 +16,11 @@ import java.util.Set;
 @Entity
 @Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_coordinates")
 @DynamicUpdate
+@DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class CoordinatesEntity {
 
     @Id

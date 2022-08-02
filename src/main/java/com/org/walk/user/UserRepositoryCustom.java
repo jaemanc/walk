@@ -28,17 +28,17 @@ public class UserRepositoryCustom {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (keyword.contains("@")) {
-            builder.and(userEntity.email.like(keyword));
+            builder.and(userEntity.email.contains(keyword));
         }
 
         String pattern = "^\\d{3}-\\d{3,4}-\\d{4}$";
 
         if (keyword.matches(pattern)) {
-            builder.and(userEntity.phone.like(keyword));
+            builder.and(userEntity.phone.contains(keyword));
         }
 
         if (StringUtils.hasText(keyword)) {
-            builder.and(userEntity.name.like(keyword));
+            builder.and(userEntity.name.contains(keyword));
         }
 
         return queryFactory
@@ -82,15 +82,13 @@ public class UserRepositoryCustom {
 
         // fetch 결과가 1이 나오기 때문에 메모리 적재 위험이 없음.
         List<UserEntity> user = queryFactory.selectFrom(qUserEntity)
-                .leftJoin(qUserEntity.files, qFileEntity)
+                .leftJoin(qUserEntity.file, qFileEntity)
                 .where(qFileEntity.user.userId.eq(id))
                 .limit(5)
                 .fetch();
 
         return user;
     }
-
-
 }
 
 

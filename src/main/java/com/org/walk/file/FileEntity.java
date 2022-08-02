@@ -4,9 +4,11 @@ import com.org.walk.course.CoordinatesEntity;
 import com.org.walk.user.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,6 +20,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name="tb_file")
 @DynamicUpdate
+@DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class FileEntity {
 
     @Id

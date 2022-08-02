@@ -51,9 +51,9 @@ public class Interceptor implements HandlerInterceptor {
 
         System.out.println(" header jwt : " + jwt + " user id : " + userId);
 
-        UserDto userDto = userService.getUser(userId);
+        // UserDto userDto = userService.getUser(userId);
 
-        if (ObjectUtils.isEmpty(userDto)) {
+        if (!userService.isUser(userId)) {
             System.out.println(" User Not found!!!  ");
             return false;
         }

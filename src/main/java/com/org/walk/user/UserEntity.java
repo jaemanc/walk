@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
@@ -24,6 +25,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name="tb_user")
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
 
     @Id
@@ -63,7 +65,7 @@ public class UserEntity {
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
-    private Set<FileEntity> files;
+    private Set<FileEntity> file;
 
     public UserEntity(Long userId, String password, String name, String address, String phone, String email, Set<FileEntity> files, Character loginYn, Date lastLogin, Date dateBirth) {
     }
@@ -89,8 +91,8 @@ public class UserEntity {
         if (!ObjectUtils.isEmpty(userDto.getEmail())) {
             this.email = userDto.getEmail();
         }
-        if (!ObjectUtils.isEmpty(userDto.getFiles())) {
-            this.files = FileMapper.mapper.toEntitySet(userDto.getFiles());
+        if (!ObjectUtils.isEmpty(userDto.getFile())) {
+            this.file = FileMapper.mapper.toEntitySet(userDto.getFile());
         }
         if (!ObjectUtils.isEmpty(userDto.getLoginYn())) {
             this.loginYn = userDto.getLoginYn();

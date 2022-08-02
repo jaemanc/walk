@@ -142,7 +142,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/{id}/files")
+    @GetMapping("/{id}/files")
     @ApiOperation(value = "get user files" , notes = "사용자 파일 조회.")
     @ApiImplicitParam(name = "id" , dataType= "long", value ="사용자 아이디", example = "0")
     public ResponseEntity<?> getUserFiles(
@@ -161,12 +161,12 @@ public class UserController {
             // 사용자 파일 조회 및 페이징 처리
             userService.getUserFiles(userDto.getUserId());
 
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<UserDto>(HttpStatus.OK);
     }
+
 
 }
