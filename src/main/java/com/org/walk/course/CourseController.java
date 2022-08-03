@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/course")
@@ -30,17 +31,21 @@ public class CourseController {
     @Autowired
     CourseServiceImpl courseService;
 
+    @Autowired
+    CourseRepository courseRepository;
+
     @GetMapping("/search/{keyword}")
     @ApiOperation(value = "get courses", notes = "코스 조회")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")
     public ResponseEntity<?> getCourseList(
-            @PathVariable String keyword,
-            @PageableDefault(page=0, size =10) Pageable pageable
+            @PathVariable(required = false) String keyword
+            , @PageableDefault(page=0, size =10) Pageable pageable
     ) {
 
         List<CourseDto> courseList = null;
 
         try {
+
             courseList = courseService.getCourseList(keyword, pageable);
 
         } catch (Exception e) {
@@ -61,7 +66,7 @@ public class CourseController {
 
         try {
 
-
+            courseDto = courseService.postCourse(courseDto);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,7 +133,6 @@ public class CourseController {
         try {
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<CourseDto>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -137,9 +141,5 @@ public class CourseController {
         return new ResponseEntity<CourseDto>(courseDto, HttpStatus.OK);
 
     }
-
-
-
-
 
 }

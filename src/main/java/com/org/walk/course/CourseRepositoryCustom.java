@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.org.walk.course.QCourseEntity;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,9 +29,10 @@ public class CourseRepositoryCustom {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        builder.or(courseEntity.courseName.like(keyword));
-        builder.or(courseEntity.courseKeyword.likeIgnoreCase(keyword));
-
+        if (StringUtils.hasText(keyword)) {
+            builder.or(courseEntity.courseName.containsIgnoreCase(keyword));
+            builder.or(courseEntity.courseKeyword.containsIgnoreCase(keyword));
+        }
 
         return queryFactory.
                 select(new QCourseDto(

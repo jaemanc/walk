@@ -33,6 +33,8 @@ public class CourseDto {
 
     private Date updatedAt;
 
+    private long fileId;
+
     private UserEntity user;
 
     private CoordinatesEntity coordinates;
