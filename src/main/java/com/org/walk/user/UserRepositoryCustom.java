@@ -28,17 +28,17 @@ public class UserRepositoryCustom {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (keyword.contains("@")) {
-            builder.and(userEntity.email.like(keyword));
+            builder.and(userEntity.email.containsIgnoreCase(keyword));
         }
 
         String pattern = "^\\d{3}-\\d{3,4}-\\d{4}$";
 
         if (keyword.matches(pattern)) {
-            builder.and(userEntity.phone.like(keyword));
+            builder.and(userEntity.phone.containsIgnoreCase(keyword));
         }
 
         if (StringUtils.hasText(keyword)) {
-            builder.and(userEntity.name.like(keyword));
+            builder.and(userEntity.name.containsIgnoreCase(keyword));
         }
 
         return queryFactory

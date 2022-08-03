@@ -35,9 +35,11 @@ public class CourseServiceImpl implements CourseService {
 
         CourseEntity courseEntity = CourseMapper.mapper.toEntity(courseDto);
 
+        courseRepository.save(courseEntity);
 
+        courseDto = CourseMapper.mapper.toDto(courseEntity);
 
-        return null;
+        return courseDto;
     }
 
     @Override

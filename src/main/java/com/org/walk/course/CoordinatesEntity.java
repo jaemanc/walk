@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_coordinates")
 @DynamicUpdate

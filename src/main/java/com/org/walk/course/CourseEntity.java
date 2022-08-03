@@ -4,6 +4,7 @@ import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -14,10 +15,11 @@ import java.util.Set;
 @Entity
 @Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_course")
 @DynamicUpdate
+@ToString
+@DynamicInsert
 public class CourseEntity {
 
     @Id
@@ -38,7 +40,7 @@ public class CourseEntity {
     @Comment("코스 키워드")
     private String courseKeyword;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = false)
     @Comment("사용자 ID")
     private long userId;
 
@@ -54,6 +56,10 @@ public class CourseEntity {
     @Column(name="updated_at")
     private Date updatedAt;
 
+    @Column(name="file_id")
+    @Comment("파일 ID")
+    private Long fileId;
+
     @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", insertable = false, updatable = false)
     private UserEntity user;
@@ -63,15 +69,17 @@ public class CourseEntity {
     private CoordinatesEntity coordinates;
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id", referencedColumnName = "user_id")
+    @JoinColumn(name="file_id", referencedColumnName = "file_id")
     private Set<FileEntity> files;
 
+
     @Builder
-    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files) {
+    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files) {
         this.courseId = courseId;
         this.coordinates_id = coordinates_id;
         this.courseName = courseName;
         this.courseKeyword = courseKeyword;
+        this.fileId = fileId;
         this.userId = userId;
         this.isDeleted = isDeleted;
         this.updater = updater;
