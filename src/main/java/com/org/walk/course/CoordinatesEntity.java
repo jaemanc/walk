@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_coordinates")
 @DynamicUpdate
@@ -48,6 +47,18 @@ public class CoordinatesEntity {
     @Comment("경도_경유")
     @Column(name = "stopover_longitude", precision=10, scale=7 , columnDefinition = "decimal(10,7)")
     private long stopoverLongitude;
+
+    @Builder
+    public CoordinatesEntity(long coordinatesId, long startLatitude, long startLongitude, long destLatitude, long destLongitude, long stopoverLatitude, long stopoverLongitude, Set<FileEntity> files) {
+        this.coordinatesId = coordinatesId;
+        this.startLatitude = startLatitude;
+        this.startLongitude = startLongitude;
+        this.destLatitude = destLatitude;
+        this.destLongitude = destLongitude;
+        this.stopoverLatitude = stopoverLatitude;
+        this.stopoverLongitude = stopoverLongitude;
+        this.files = files;
+    }
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="coordinates_id", referencedColumnName = "coordinates_id")

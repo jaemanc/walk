@@ -5,6 +5,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,12 +23,13 @@ public class UserController {
     @Autowired
     UserServiceImpl userService;
 
-
     @GetMapping("/search/{keyword}")
     @ApiOperation(value = "get users", notes = "유저 검색")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")
     public ResponseEntity<?> getUserList(
-            @PathVariable String keyword) {
+            @PathVariable(required = false) String keyword
+             , @PageableDefault(page=0, size =10) Pageable pageable
+    ) {
         List<UserDto> users = null;
         try {
 

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -38,13 +39,21 @@ public class FileEntity {
     @Comment("업로드 날짜")
     private Date uploadDate;
 
-    @Column(name="file_loc")
+    @Column(name="file_loc", length = 150)
     @Comment("파일 위치")
     private String fileLoc;
 
     @Column(name="is_deleted")
     @Comment("삭제 여부")
     private Character isDeleted;
+
+    @Column(name="updater", length = 20)
+    @Comment("수정자")
+    private String updater;
+
+    @LastModifiedDate
+    @Column(name="updated_at")
+    private Date updatedAt;
 
     @Column(name="user_id")
     @Comment("사용자 ID")

@@ -5,8 +5,8 @@ import com.org.walk.user.UserDto;
 
 public interface LoginService {
 
-    public String login(UserDto userDto) throws Exception;
+    String login(UserDto userDto) throws Exception;
 
-    public String loginByEmail(UserDto userDto) throws Exception;
+    String loginByEmail(UserDto userDto) throws Exception;
 
 }

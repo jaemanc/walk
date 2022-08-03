@@ -46,6 +46,11 @@ public class Interceptor implements HandlerInterceptor {
 
         System.out.println(" jwt value : " + jwt);
 
+        if (StringUtils.isEmpty(jwt)) {
+            System.out.println("The value of jwt in the request header is null... ");
+            return false;
+        }
+
         long userId = jwtTokenProvider.getUserId(jwt);
 
 
