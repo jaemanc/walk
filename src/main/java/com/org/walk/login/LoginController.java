@@ -13,9 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,14 +36,14 @@ public class LoginController {
 
     @PostMapping("")
     @ApiOperation(value = "user login", notes = "사용자 로그인")
-    public ResponseEntity<UserDto> login(
+    public ResponseEntity<LoginDto> login(
             @RequestBody UserDto userdto
     ) {
 
-        UserDto user = null;
         String jwt = "";
-
+        LoginDto loginDto = null;
         HttpHeaders httpHeaders;
+
         try {
             System.out.println( " 로그인 요청 값 : " + new ObjectMapper().writeValueAsString(userdto));
             jwt = loginService.loginByEmail(userdto);
@@ -54,13 +51,7 @@ public class LoginController {
             httpHeaders = new HttpHeaders();
             httpHeaders.add("authrozation", jwt);
 
-            userdto = userService.getUserByEmail(userdto.getEmail());
-
-            if (ObjectUtils.isEmpty(userdto)) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-
-            user = userService.getUser(userdto.getUserId());
+            loginDto = loginService.postLoginUser(userdto);
 
         } catch (Exception e) {
 
@@ -72,7 +63,7 @@ public class LoginController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<UserDto>(user, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<LoginDto>(loginDto, httpHeaders, HttpStatus.OK);
     }
 
 

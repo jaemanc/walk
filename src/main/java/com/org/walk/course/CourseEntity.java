@@ -1,9 +1,11 @@
 package com.org.walk.course;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -53,6 +55,7 @@ public class CourseEntity {
 
     @LastModifiedDate
     @Column(name="updated_at")
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updatedAt;
 
     @Column(name="file_id")

@@ -12,7 +12,7 @@ public interface PostService {
     @Transactional
     PostDto getPost(long postId) throws Exception;
 
-    List<PostDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception;
+    List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception;
 
     PostDto postPost(PostDto postDto) throws Exception;
 

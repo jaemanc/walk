@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByEmail(String userEmail) throws Exception {
         UserEntity userEntity = userRepository.getUserByEmail(userEmail);
+
         UserDto user = UserMapper.mapper.toDto(userEntity);
 
         return user;

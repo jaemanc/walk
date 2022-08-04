@@ -1,5 +1,6 @@
 package com.org.walk.board;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.org.walk.user.UserDto;
 import com.org.walk.user.UserEntity;
 import com.querydsl.core.annotations.QueryProjection;
@@ -27,10 +28,12 @@ public class PostDto {
 
     private String postMsg;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date createdAt;
 
     private long createrId;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updated_at;
 
     private Date deletedAt;
@@ -42,7 +45,7 @@ public class PostDto {
     private BoardDto board;
 
     @QueryProjection
-    public PostDto(Long boardId, Long postId, String postTitle, String postMsg, Date createdAt, long createrId, Date updated_at, Date deletedAt, Character isDeleted) {
+    public PostDto(Long boardId, Long postId, String postTitle, String postMsg, Date createdAt, long createrId, Date updated_at, Date deletedAt, Character isDeleted, BoardDto board) {
         this.boardId = boardId;
         this.postId = postId;
         this.postTitle = postTitle;
@@ -52,5 +55,6 @@ public class PostDto {
         this.updated_at = updated_at;
         this.deletedAt = deletedAt;
         this.isDeleted = isDeleted;
+        this.board = board;
     }
 }

@@ -4,6 +4,7 @@ import com.org.walk.file.FileEntity;
 import com.org.walk.file.FileMapper;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -25,6 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name="tb_user")
 @DynamicUpdate
+@DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
 

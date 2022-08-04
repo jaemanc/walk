@@ -53,7 +53,6 @@ public class Interceptor implements HandlerInterceptor {
 
         long userId = jwtTokenProvider.getUserId(jwt);
 
-
         System.out.println(" header jwt : " + jwt + " user id : " + userId);
 
         // UserDto userDto = userService.getUser(userId);

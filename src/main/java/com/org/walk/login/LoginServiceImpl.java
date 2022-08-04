@@ -1,7 +1,6 @@
 package com.org.walk.login;
 
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserService;
+import com.org.walk.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -13,10 +12,16 @@ public class LoginServiceImpl implements LoginService {
     UserService userService;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserRepositoryCustom userRepositoryCustom;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public String login(UserDto userDto) throws Exception {
+    public String loginToJwt(UserDto userDto) throws Exception {
 
         UserDto user = userService.getUser(userDto.getUserId());
 
@@ -38,6 +43,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String loginByEmail(UserDto userDto) throws Exception {
         UserDto user = userService.getUserByEmail(userDto.getEmail());
+
         String jwt = "";
 
         if (ObjectUtils.isEmpty(user)) {
@@ -48,5 +54,21 @@ public class LoginServiceImpl implements LoginService {
 
         return jwt;
 
+    }
+
+    @Override
+    public LoginDto postLoginUser(UserDto userdto) throws Exception {
+
+        userdto = userService.getUserByEmail(userdto.getEmail());
+        userdto.setLoginYn('Y');
+
+        UserEntity userEntity = UserMapper.mapper.toEntity(userdto);
+        userRepository.saveAndFlush(userEntity);
+
+        LoginDto loginDto = new LoginDto(userEntity.getUserId()
+                ,userEntity.getName(),userEntity.getLoginYn()
+                ,userEntity.getLastLogin());
+
+        return loginDto;
     }
 }

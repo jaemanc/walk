@@ -29,26 +29,17 @@ public class PostServiceImpl implements PostService {
         PostEntity postEntity = postRepositoryCustom.getPost(postId);
 
 
-
-
-
-        System.out.println(" entity to Dto 변환합니다>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(" entity to Dto 변환 시, lazy loading 이 실행됨. ");
         //PostDto postDto = PostMapper.mapper.toDto(postEntity);
-
-        // 왜 post 하위의 user 및 board를 가져오냐고..?
-        // map struct를 써서 그런 이슈가 있는듯..? dto에서 쓰고자하면 entity의 값을 lazy 로딩해서 가져오니까..
-
-
-        System.out.println(" entity to Dto 변환합니다>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
 
         return null;
     }
 
     @Override
-    public List<PostDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception {
+    public List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception {
 
-        List<PostDto> postList = postRepositoryCustom.getPostList(keyword,boardId,pageable);
+        List<PostListResponseDto> postList = postRepositoryCustom.getPostList(keyword,boardId,pageable);
 
         return postList;
     }

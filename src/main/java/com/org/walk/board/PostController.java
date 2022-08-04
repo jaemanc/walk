@@ -23,31 +23,31 @@ public class PostController {
     @Autowired
     PostServiceImpl postService;
 
-    @GetMapping("/search/{keyword}")
+    @GetMapping("/search")
     @ApiOperation(value="get post list", notes="게시글 검색" )
-    @ApiImplicitParam(name="keyword", value="검색 키워드")
+    @ApiImplicitParam(name="keyword", value="검색 키워드" , required = false, defaultValue = "")
     public ResponseEntity<?> getPostList(
-            @PathVariable String keyword
-            , long boardId
+            @RequestParam(required = false) String keyword
+            , @RequestParam(required = false, defaultValue = "0") long boardId
             , @PageableDefault(page=0, size =10) Pageable pageable
 
     ) {
 
-        List<PostDto> postList = null;
+        List<PostListResponseDto> postList = null;
 
         try {
 
              postList = postService.getPostList(keyword, boardId, pageable);
 
              if (postList.size() < 1) {
-                return new ResponseEntity<List<PostDto>>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<List<PostListResponseDto>>(HttpStatus.NO_CONTENT);
              }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<List<PostDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<List<PostListResponseDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<List<PostDto>>(postList, HttpStatus.OK );
+        return new ResponseEntity<List<PostListResponseDto>>(postList, HttpStatus.OK );
     }
 
     @GetMapping("/{postId}")
@@ -133,11 +133,4 @@ public class PostController {
         return new ResponseEntity<>( HttpStatus.OK );
     }
 
-
-
 }
-
-
-
-
-
