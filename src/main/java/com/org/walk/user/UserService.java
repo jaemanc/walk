@@ -1,5 +1,6 @@
 package com.org.walk.user;
 
+import com.org.walk.user.dto.UserDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

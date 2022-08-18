@@ -1,7 +1,7 @@
 package com.org.walk.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.mapstruct.Mapping;
+import com.org.walk.user.dto.UserDto;
+import com.org.walk.user.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

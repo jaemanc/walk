@@ -1,16 +1,14 @@
 package com.org.walk.user;
 
 import com.org.walk.file.QFileEntity;
+import com.org.walk.user.dto.QUserDto;
+import com.org.walk.user.dto.UserDto;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.EntityPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository

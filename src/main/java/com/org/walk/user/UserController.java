@@ -1,6 +1,6 @@
 package com.org.walk.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.walk.user.dto.UserDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

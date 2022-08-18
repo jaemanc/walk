@@ -2,13 +2,10 @@ package com.org.walk.login;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.org.walk.file.FileDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Set;
 
 @Getter
 @Setter

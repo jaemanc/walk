@@ -1,5 +1,6 @@
-package com.org.walk.course;
+package com.org.walk.course.dto;
 
+import com.org.walk.course.CoordinatesEntity;
 import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
 import com.querydsl.core.annotations.QueryProjection;

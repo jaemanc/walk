@@ -1,4 +1,4 @@
-package com.org.walk.board;
+package com.org.walk.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;

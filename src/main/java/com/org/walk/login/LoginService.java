@@ -1,7 +1,7 @@
 package com.org.walk.login;
 
 
-import com.org.walk.user.UserDto;
+import com.org.walk.user.dto.UserDto;
 
 public interface LoginService {
 

@@ -24,8 +24,8 @@ spring:
     hibernate:
       # create로 설정하면 실행 시, 기존 테이블을 삭제하고 새로 생성하게 됨.
       # 실수로 운영에 반영하면 짤리거나 별명이 드랍더테이블로 바뀐다.
-#      ddl-auto: validate
-       ddl-auto: update
+      ddl-auto: validate
+      # ddl-auto: update
     defer-datasource-initialization: true
     properties:
       hibernate:
@@ -36,7 +36,4 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
-
-
-
 

@@ -1,4 +1,4 @@
-package com.org.walk.file;
+package com.org.walk.file.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

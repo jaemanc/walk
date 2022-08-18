@@ -1,7 +1,7 @@
 package com.org.walk.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.walk.user.UserDto;
+import com.org.walk.user.dto.UserDto;
 import com.org.walk.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

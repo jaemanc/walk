@@ -1,7 +1,7 @@
 package com.org.walk.board;
 
+import com.org.walk.board.dto.PostDto;
 import com.org.walk.user.UserEntity;
-import com.org.walk.user.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class PostEntity {
     private Long boardId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="post_id")
     private Long postId;
 

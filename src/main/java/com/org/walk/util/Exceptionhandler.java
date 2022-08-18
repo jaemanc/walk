@@ -22,4 +22,13 @@ public class Exceptionhandler {
         return new ResponseEntity<String>(" EXPIRED JWT REQUESTED...  " , HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<?> IllegalAccessExceptionHandler ( IllegalAccessException ex) {
+
+        log_error.error("  JWT VALUE CANNOT BE NULL!!! ");
+
+        return new ResponseEntity<String>( " JWT VALUE CANNOT BE NULL!!! ", HttpStatus.BAD_REQUEST );
+    }
+
+
 }

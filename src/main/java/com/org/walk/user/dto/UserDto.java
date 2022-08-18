@@ -1,14 +1,11 @@
-package com.org.walk.user;
+package com.org.walk.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.org.walk.file.FileDto;
-import com.org.walk.file.FileEntity;
+import com.org.walk.file.dto.FileDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Getter

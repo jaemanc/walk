@@ -1,4 +1,4 @@
-package com.org.walk.course;
+package com.org.walk.course.dto;
 
 import com.org.walk.file.FileEntity;
 import lombok.AllArgsConstructor;

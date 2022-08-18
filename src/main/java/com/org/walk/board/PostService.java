@@ -1,5 +1,8 @@
 package com.org.walk.board;
 
+import com.org.walk.board.dto.PostDto;
+import com.org.walk.board.dto.PostListResponseDto;
+import com.org.walk.board.dto.PostSimpleDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +13,7 @@ public interface PostService {
     boolean isPost(long id) throws Exception;
 
     @Transactional
-    PostDto getPost(long postId) throws Exception;
+    PostSimpleDto getPost(long postId) throws Exception;
 
     List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception;
 

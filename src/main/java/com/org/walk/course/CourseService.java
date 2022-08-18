@@ -1,9 +1,7 @@
 package com.org.walk.course;
 
 
-import com.org.walk.util.EntityMapper;
-import org.mapstruct.Mapper;
-import org.springframework.context.annotation.Bean;
+import com.org.walk.course.dto.CourseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 

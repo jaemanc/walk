@@ -25,7 +25,7 @@ import java.util.Date;
 public class FileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="file_id")
     @Comment("파일 ID")
     private Long fileId;

@@ -1,5 +1,10 @@
 package com.org.walk.board;
 
+import com.org.walk.board.dto.PostDto;
+import com.org.walk.board.dto.PostListResponseDto;
+import com.org.walk.board.dto.PostSimpleDto;
+import com.org.walk.board.mapper.PostMapper;
+import com.org.walk.board.mapper.PostSimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,17 +28,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto getPost(long postId) throws Exception {
+    public PostSimpleDto getPost(long postId) throws Exception {
 
         // PostEntity postEntity = postRepository.getPostByPostId(postId);
         PostEntity postEntity = postRepositoryCustom.getPost(postId);
 
+        PostSimpleDto postSimpleDto = PostSimpleMapper.mapper.toDto(postEntity);
 
-        System.out.println(" entity to Dto 변환 시, lazy loading 이 실행됨. ");
-        //PostDto postDto = PostMapper.mapper.toDto(postEntity);
+        System.out.println(" 비교용 분기 11:: ");
+
+        PostDto postTEmp = PostMapper.mapper.toDto(postEntity);
+        System.out.println(" 비교용 분기 22:: ");
 
 
-        return null;
+
+        return postSimpleDto;
     }
 
     @Override

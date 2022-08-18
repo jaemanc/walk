@@ -1,5 +1,7 @@
 package com.org.walk.course;
 
+import com.org.walk.course.dto.CourseDto;
+import com.org.walk.course.dto.QCourseDto;
 import com.org.walk.file.QFileEntity;
 import com.org.walk.user.QUserEntity;
 import com.querydsl.core.BooleanBuilder;
@@ -7,7 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import com.org.walk.course.QCourseEntity;
 import org.springframework.util.StringUtils;
 
 import java.util.List;

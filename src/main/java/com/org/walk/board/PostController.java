@@ -1,6 +1,8 @@
 package com.org.walk.board;
 
-import com.org.walk.user.UserDto;
+import com.org.walk.board.dto.PostDto;
+import com.org.walk.board.dto.PostListResponseDto;
+import com.org.walk.board.dto.PostSimpleDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +39,9 @@ public class PostController {
 
         try {
 
+            System.out.println(pageable.getOffset() + " / " + pageable.getPageSize() + " / " + pageable.getPageNumber());
+            System.out.println(pageable.toString()+ " / ");
+
              postList = postService.getPostList(keyword, boardId, pageable);
 
              if (postList.size() < 1) {
@@ -52,25 +57,25 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @ApiOperation(value="get post", notes="게시글 조회")
-    public ResponseEntity<PostDto> getPost(
+    public ResponseEntity<PostSimpleDto> getPost(
             @PathVariable long postId
     ){
 
-        PostDto postDto = null;
+        PostSimpleDto postSimpleDto = null;
 
         try {
 
-            postDto = postService.getPost(postId);
+            postSimpleDto = postService.getPost(postId);
 
-            if(ObjectUtils.isEmpty(postDto)) {
+            if(ObjectUtils.isEmpty(postSimpleDto)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<PostDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<PostSimpleDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<PostDto>(postDto, HttpStatus.OK );
+        return new ResponseEntity<PostSimpleDto>(postSimpleDto, HttpStatus.OK );
 
     }
 
@@ -92,10 +97,13 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @ApiOperation(value="put post", notes="게시글 수정")
-    public ResponseEntity<PostDto> putPost(
+    public ResponseEntity<?> putPost(
             @PathVariable long postId
             ,@RequestBody PostDto postDto
     ) {
+
+        PostSimpleDto postSimpleDto = null;
+
         try {
 
             if ( !postService.isPost(postId) ) {
@@ -104,13 +112,13 @@ public class PostController {
 
             postService.putPost(postDto);
 
-            postDto = postService.getPost(postId);
+             postSimpleDto = postService.getPost(postId);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<PostDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<PostSimpleDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<PostDto>(postDto, HttpStatus.OK );
+        return new ResponseEntity<PostSimpleDto>(postSimpleDto, HttpStatus.OK );
     }
 
     @DeleteMapping("/{postId}")

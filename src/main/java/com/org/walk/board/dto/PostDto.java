@@ -1,17 +1,13 @@
-package com.org.walk.board;
+package com.org.walk.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserEntity;
+import com.org.walk.user.dto.UserDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Getter

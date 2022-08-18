@@ -1,8 +1,5 @@
 package com.org.walk;
 
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserEntity;
-import com.org.walk.user.UserMapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

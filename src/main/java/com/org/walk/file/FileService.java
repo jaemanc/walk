@@ -1,7 +1,7 @@
 package com.org.walk.file;
 
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserEntity;
+import com.org.walk.file.dto.FileDto;
+import com.org.walk.user.dto.UserDto;
 
 import java.io.File;
 import java.util.List;

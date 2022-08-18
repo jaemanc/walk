@@ -1,5 +1,6 @@
 package com.org.walk.board;
 
+import com.org.walk.board.dto.PostListResponseDto;
 import com.org.walk.user.QUserEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;

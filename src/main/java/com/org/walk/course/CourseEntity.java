@@ -24,7 +24,7 @@ import java.util.Set;
 public class CourseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     @Comment("코스 ID")
     private long courseId;

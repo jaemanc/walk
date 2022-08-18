@@ -23,7 +23,7 @@ import java.util.Date;
 public class BoardEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="board_id")
     private Long boardId;
 

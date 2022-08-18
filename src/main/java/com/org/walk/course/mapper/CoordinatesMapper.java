@@ -1,5 +1,7 @@
-package com.org.walk.course;
+package com.org.walk.course.mapper;
 
+import com.org.walk.course.CoordinatesEntity;
+import com.org.walk.course.dto.CoordinatesDto;
 import com.org.walk.util.EntityMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

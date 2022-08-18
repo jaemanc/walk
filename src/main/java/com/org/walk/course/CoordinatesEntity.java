@@ -24,7 +24,7 @@ import java.util.Set;
 public class CoordinatesEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="coordinates_id")
     private long coordinatesId;
 

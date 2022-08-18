@@ -1,9 +1,9 @@
 package com.org.walk.course;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.org.walk.course.dto.CourseDto;
+import com.org.walk.course.mapper.CourseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

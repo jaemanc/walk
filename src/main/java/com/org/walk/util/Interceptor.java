@@ -1,32 +1,18 @@
 package com.org.walk.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.user.UserServiceImpl;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.org.walk.login.JwtTokenProvider;
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.thymeleaf.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
@@ -48,7 +34,8 @@ public class Interceptor implements HandlerInterceptor {
 
         if (StringUtils.isEmpty(jwt)) {
             System.out.println("The value of jwt in the request header is null... ");
-            return false;
+
+            throw new IllegalAccessException(" jwt value cannot be null!!!");
         }
 
         long userId = jwtTokenProvider.getUserId(jwt);

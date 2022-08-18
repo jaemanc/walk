@@ -1,7 +1,7 @@
-package com.org.walk.file;
+package com.org.walk.file.mapper;
 
-import com.org.walk.user.UserDto;
-import com.org.walk.user.UserEntity;
+import com.org.walk.file.FileEntity;
+import com.org.walk.file.dto.FileDto;
 import com.org.walk.util.EntityMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
