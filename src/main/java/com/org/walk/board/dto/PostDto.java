@@ -3,10 +3,7 @@ package com.org.walk.board.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.org.walk.user.dto.UserDto;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -14,6 +11,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PostDto {
 
     private Long boardId;

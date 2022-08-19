@@ -1,5 +1,6 @@
 package com.org.walk.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
@@ -12,18 +13,23 @@ public class PostSimpleDto {
 
     private Long boardId;
 
+    private String boardName;
+
     private Long postId;
 
     private String postTitle;
 
     private String postMsg;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date createdAt;
 
     private long createrId;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updated_at;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date deletedAt;
 
     private Character isDeleted;

@@ -110,15 +110,16 @@ public class PostController {
                 return new ResponseEntity<PostDto>(HttpStatus.NOT_FOUND);
             }
 
+            postDto.setPostId(postId);
             postService.putPost(postDto);
 
-             postSimpleDto = postService.getPost(postId);
+            postSimpleDto = postService.getPost(postId);
 
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<PostSimpleDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<PostSimpleDto>(postSimpleDto, HttpStatus.OK );
+        return new ResponseEntity<>(postSimpleDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{postId}")

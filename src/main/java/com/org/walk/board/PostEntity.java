@@ -2,10 +2,7 @@ package com.org.walk.board;
 
 import com.org.walk.board.dto.PostDto;
 import com.org.walk.user.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,6 +23,7 @@ import java.util.Date;
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class PostEntity {
 
     @Column(name="board_id")

@@ -35,13 +35,6 @@ public class PostServiceImpl implements PostService {
 
         PostSimpleDto postSimpleDto = PostSimpleMapper.mapper.toDto(postEntity);
 
-        System.out.println(" 비교용 분기 11:: ");
-
-        PostDto postTEmp = PostMapper.mapper.toDto(postEntity);
-        System.out.println(" 비교용 분기 22:: ");
-
-
-
         return postSimpleDto;
     }
 
@@ -67,13 +60,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public void putPost(PostDto postDto) throws Exception {
 
-        Optional<PostEntity> result = postRepository.findById(postDto.getPostId());
+        PostEntity postEntity = postRepositoryCustom.getPost(postDto.getPostId());
 
-        if (result.isPresent() ) {
-
-            PostEntity postEntity = result.get();
+        if (postEntity != null ) {
             postEntity.updatePost(postDto);
-
             postRepository.save(postEntity);
         }
     }
