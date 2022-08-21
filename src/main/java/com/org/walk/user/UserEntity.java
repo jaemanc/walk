@@ -53,7 +53,7 @@ public class UserEntity {
     private Date createdAt;
 
     @Column(name="login_yn")
-    @ColumnDefault("N") //default 0
+    @ColumnDefault("N")
     private Character loginYn;
 
     @LastModifiedDate

@@ -62,7 +62,7 @@ public class CourseEntity {
     @Comment("파일 ID")
     private Long fileId;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id", insertable = false, updatable = false)
     private UserEntity user;
 
@@ -70,7 +70,7 @@ public class CourseEntity {
     @JoinColumn(name="coordinates_id", insertable = false, updatable = false)
     private CoordinatesEntity coordinates;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private Set<FileEntity> files;
 

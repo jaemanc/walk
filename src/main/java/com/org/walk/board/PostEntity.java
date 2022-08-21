@@ -53,17 +53,17 @@ public class PostEntity {
     private Date updated_at;
 
     @Column(name="deleted_at")
-    @ColumnDefault("N")
     private Date deletedAt;
 
     @Column(name="is_deleted")
+    @ColumnDefault("N")
     private Character isDeleted;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="creater_id", insertable = false, updatable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="board_id", insertable = false, updatable = false)
     private BoardEntity board;
 
