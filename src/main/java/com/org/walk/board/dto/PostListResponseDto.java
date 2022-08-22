@@ -2,10 +2,7 @@ package com.org.walk.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -14,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class PostListResponseDto {
 
     private Long boardId;
@@ -35,5 +33,7 @@ public class PostListResponseDto {
     private String boardName;
 
     private String name;
+
+    private Long allCount;
 
 }

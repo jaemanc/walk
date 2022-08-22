@@ -79,6 +79,9 @@ public class PostServiceImpl implements PostService {
 
         List<PostSimpleDto> postSimpleDtoList = postRepositoryCustom.getPostList(pageable);
 
+         long pageCount = postRepositoryCustom.getPostListCount();
+         postSimpleDtoList.forEach(i -> i.setAllCount(pageCount));
+
         return postSimpleDtoList;
     }
 }
