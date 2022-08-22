@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -39,9 +38,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception {
+    public List<PostListResponseDto> getPostListSearch(String keyword, long boardId, Pageable pageable) throws Exception {
 
-        List<PostListResponseDto> postList = postRepositoryCustom.getPostList(keyword,boardId,pageable);
+        List<PostListResponseDto> postList = postRepositoryCustom.getPostListSearch(keyword,boardId,pageable);
 
         return postList;
     }
@@ -73,5 +72,13 @@ public class PostServiceImpl implements PostService {
 
         postRepository.deleteById(postId);
 
+    }
+
+    @Override
+    public List<PostSimpleDto> getPostList(Pageable pageable) throws Exception {
+
+        List<PostSimpleDto> postSimpleDtoList = postRepositoryCustom.getPostList(pageable);
+
+        return postSimpleDtoList;
     }
 }

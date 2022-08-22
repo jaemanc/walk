@@ -1,6 +1,7 @@
 package com.org.walk.board;
 
 import com.org.walk.board.dto.PostListResponseDto;
+import com.org.walk.board.dto.PostSimpleDto;
 import com.org.walk.user.QUserEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -21,7 +22,7 @@ public class PostRepositoryCustom {
     private final QPostEntity qPostEntity = QPostEntity.postEntity;
     private final QUserEntity qUserEntity = QUserEntity.userEntity;
 
-    public List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) {
+    public List<PostListResponseDto> getPostListSearch(String keyword, long boardId, Pageable pageable) {
 
         // 제목 / 작성자 / 게시글 내용 기준으로 조회.
 
@@ -36,50 +37,6 @@ public class PostRepositoryCustom {
         if ( boardId > 0 ) {
             builder.and(qPostEntity.boardId.eq(boardId));
         }
-
-        /*
-        return queryFactory
-                .select(new QPostDto(
-                        qPostEntity.boardId
-                        ,qPostEntity.postId
-                        ,qPostEntity.postTitle
-                        ,qPostEntity.postMsg
-                        ,qPostEntity.createdAt
-                        ,qPostEntity.createrId
-                        ,qPostEntity.updated_at
-                        ,qPostEntity.deletedAt
-                        ,qPostEntity.isDeleted
-                ))
-                .from(qPostEntity)
-                .leftJoin(qPostEntity.board, qBoardEntity)
-                .fetchJoin()
-                .where(builder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qPostEntity.createdAt.desc())
-                .fetch();
-                */
-
-     /*
-      return queryFactory
-                .select(Projections.fields(PostDto.class
-                        ,qBoardEntity.boardName.as("boardName")
-                        ,qPostEntity.board.boardName.as("boardName2")
-                        ,qPostEntity.postId
-                        ,qPostEntity.postTitle
-                        ,qPostEntity.postMsg
-                        ,qPostEntity.createdAt
-                ))
-                .from(qPostEntity)
-                .join(qBoardEntity).on(qPostEntity.boardId.eq(qBoardEntity.boardId))
-                .fetchJoin()
-                .where(builder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qPostEntity.createdAt.desc())
-                .fetch();
-                */
-
 
         return queryFactory
                 .select(Projections.fields(PostListResponseDto.class
@@ -127,5 +84,28 @@ public class PostRepositoryCustom {
 
     }
 
+    public List<PostSimpleDto> getPostList(Pageable pageable) {
+
+        return queryFactory
+                .select(Projections.fields(PostSimpleDto.class
+                        ,qPostEntity.board.boardName.as("boardName")
+                        ,qPostEntity.boardId
+                        ,qPostEntity.createrId
+                        ,qPostEntity.postId
+                        ,qPostEntity.postTitle
+                        ,qPostEntity.postMsg
+                        ,qPostEntity.createdAt
+                        ,qPostEntity.user.name.as("name")
+                ))
+                .from(qPostEntity)
+                .join(qBoardEntity).on(qPostEntity.boardId.eq(qBoardEntity.boardId))
+                .join(qUserEntity).on(qPostEntity.createrId.eq(qUserEntity.userId))
+                .fetchJoin()
+                .where()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qPostEntity.createdAt.desc())
+                .fetch();
+    }
 
 }

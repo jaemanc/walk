@@ -15,12 +15,17 @@ public interface PostService {
     @Transactional
     PostSimpleDto getPost(long postId) throws Exception;
 
-    List<PostListResponseDto> getPostList(String keyword, long boardId, Pageable pageable) throws Exception;
+    List<PostListResponseDto> getPostListSearch(String keyword, long boardId, Pageable pageable) throws Exception;
 
+    @Transactional
     PostDto postPost(PostDto postDto) throws Exception;
 
+    @Transactional
     void putPost(PostDto postDto) throws Exception;
 
+    @Transactional
     void deletePost(long postId) throws Exception;
+
+    List<PostSimpleDto> getPostList(Pageable pageable) throws Exception;
 
 }
