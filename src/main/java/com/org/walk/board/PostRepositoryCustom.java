@@ -4,7 +4,9 @@ import com.org.walk.board.dto.PostListResponseDto;
 import com.org.walk.board.dto.PostSimpleDto;
 import com.org.walk.user.QUserEntity;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,10 @@ public class PostRepositoryCustom {
             builder.and(qPostEntity.boardId.eq(boardId));
         }
 
-        return queryFactory
+        builder.and(qPostEntity.isDeleted.eq('N'));
+
+        List<PostListResponseDto> result =
+                queryFactory
                 .select(Projections.fields(PostListResponseDto.class
                         ,qPostEntity.board.boardName.as("boardName")
                         ,qPostEntity.boardId
@@ -58,6 +63,12 @@ public class PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .orderBy(qPostEntity.createdAt.desc())
                 .fetch();
+
+        long allCount = queryFactory.selectFrom(qPostEntity).where(builder).fetchCount();
+
+        result.forEach(i -> i.setAllCount(allCount));
+
+        return result;
 
     }
 
@@ -101,11 +112,19 @@ public class PostRepositoryCustom {
                 .join(qBoardEntity).on(qPostEntity.boardId.eq(qBoardEntity.boardId))
                 .join(qUserEntity).on(qPostEntity.createrId.eq(qUserEntity.userId))
                 .fetchJoin()
-                .where()
+                .where(qPostEntity.isDeleted.eq('N'))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(qPostEntity.createdAt.desc())
                 .fetch();
+    }
+
+    public long getPostListCount() {
+
+        return queryFactory
+                .selectFrom(qPostEntity)
+                .where(qPostEntity.isDeleted.eq('N'))
+                .fetchCount();
     }
 
 }

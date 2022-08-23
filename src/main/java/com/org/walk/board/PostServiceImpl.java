@@ -52,7 +52,6 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(postEntity);
 
-
         return PostMapper.mapper.toDto(postEntity);
     }
 
@@ -78,6 +77,9 @@ public class PostServiceImpl implements PostService {
     public List<PostSimpleDto> getPostList(Pageable pageable) throws Exception {
 
         List<PostSimpleDto> postSimpleDtoList = postRepositoryCustom.getPostList(pageable);
+
+         long pageCount = postRepositoryCustom.getPostListCount();
+         postSimpleDtoList.forEach(i -> i.setAllCount(pageCount));
 
         return postSimpleDtoList;
     }

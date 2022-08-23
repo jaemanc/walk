@@ -34,8 +34,10 @@ public class PostSimpleDto {
 
     private Character isDeleted;
 
+    private long allCount;
+
     @QueryProjection
-    public PostSimpleDto(Long boardId, Long postId, String postTitle, String postMsg, Date createdAt, long createrId, Date updated_at, Date deletedAt, Character isDeleted) {
+    public PostSimpleDto(Long boardId, Long postId, String postTitle, String postMsg, Date createdAt, long createrId, Date updated_at, Date deletedAt, Character isDeleted, long allCount) {
         this.boardId = boardId;
         this.postId = postId;
         this.postTitle = postTitle;
@@ -45,5 +47,6 @@ public class PostSimpleDto {
         this.updated_at = updated_at;
         this.deletedAt = deletedAt;
         this.isDeleted = isDeleted;
+        this.allCount = allCount;
     }
 }
