@@ -34,10 +34,10 @@ public class JwtTokenProvider {
     private long tokenValidTime = 60 * 60 * 1000L;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+//    @PostConstruct
+//    protected void init() {
+//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+//    }
 
     // JWT 토큰 생성
     public String createToken(UserDto userDto) {
@@ -94,11 +94,11 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserName(String token) {
-        return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes())).parseClaimsJws(token).getBody().getSubject();
     }
 
     public long getUserId(String token) {
-        Object id = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token).getBody().get("id");
+        Object id = Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes())).parseClaimsJws(token).getBody().get("id");
 
         String stringToConvert = String.valueOf(id);
         Long convertedLong = Long.parseLong(stringToConvert);
@@ -117,7 +117,7 @@ public class JwtTokenProvider {
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(jwtToken);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes())).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             e.printStackTrace();
