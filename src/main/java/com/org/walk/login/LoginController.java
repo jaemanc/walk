@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -33,6 +34,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("")
     @ApiOperation(value = "user login", notes = "사용자 로그인")
@@ -66,5 +70,26 @@ public class LoginController {
         return new ResponseEntity<LoginDto>(loginDto, httpHeaders, HttpStatus.OK);
     }
 
+    @PostMapping("/verification")
+    @ApiOperation(value = " jwt 갱신", notes = " 토큰 만료 시간 갱신")
+    public ResponseEntity<String> renewalJwt(
+            @RequestParam String jwt
+    ) {
+        String renewalJwt = "";
+        try {
+            // 만료된 jwt는 interceptor 에서 걸러지기 때문에,
+            // 만료 이전의 jwt만 갱신하여 새로 발급한다.
+            renewalJwt = jwtTokenProvider.renewalJwt(jwt);
+
+        } catch ( Exception e) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            e.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
+            log_error.error(e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>(renewalJwt, HttpStatus.OK);
+    }
 
 }

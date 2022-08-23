@@ -1,5 +1,7 @@
 package com.org.walk.login;
 
+import com.org.walk.user.UserService;
+import com.org.walk.user.UserServiceImpl;
 import com.org.walk.user.dto.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -7,6 +9,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,6 +23,10 @@ import java.util.*;
 @Component
 @Service
 public class JwtTokenProvider {
+
+    @Autowired
+    UserServiceImpl userService;
+
 
     private String secretKey = "Son_of_iksan";
 
@@ -49,11 +56,40 @@ public class JwtTokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
 
         return jwt;
+    }
+
+    public String renewalJwt(String jwt) throws Exception {
+
+        Object id = Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes())).parseClaimsJws(jwt).getBody().get("id");
+
+        String stringToConvert = String.valueOf(id);
+        Long convertedLong = Long.parseLong(stringToConvert);
+        long _id = convertedLong;
+
+        UserDto userDto = userService.getUser(_id);
+
+        Claims claims = Jwts.claims().setSubject(userDto.getName()); // JWT payload 에 저장되는 정보단위
+        // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+
+        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+        claims.put("id", _id);
+        claims.put("name",userDto.getName());
+
+        Date now = new Date();
+        String renewalJwt = Jwts.builder()
+                .setClaims(claims) // 정보 저장
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())  // 사용할 암호화 알고리즘과
+                // signature 에 들어갈 secret값 세팅
+                .compact();
+
+        return renewalJwt;
     }
 
     // 토큰에서 회원 정보 추출

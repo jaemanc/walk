@@ -52,7 +52,6 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(postEntity);
 
-
         return PostMapper.mapper.toDto(postEntity);
     }
 
