@@ -3,6 +3,7 @@ package com.org.walk.login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.user.dto.UserDto;
 import com.org.walk.user.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Map;
 
 @Api(tags = {"LoginController"})
 @Controller
@@ -73,20 +75,28 @@ public class LoginController {
     @PostMapping("/verification")
     @ApiOperation(value = " jwt 갱신", notes = " 토큰 만료 시간 갱신")
     public ResponseEntity<String> renewalJwt(
-            @RequestParam String jwt
+            @RequestBody Map<String, String> jwtMap
     ) {
         String renewalJwt = "";
+      String jwt = jwtMap.get("jwt");
         try {
             // 만료된 jwt는 interceptor 에서 걸러지기 때문에,
             // 만료 이전의 jwt만 갱신하여 새로 발급한다.
             renewalJwt = jwtTokenProvider.renewalJwt(jwt);
+        } catch (ExpiredJwtException t ) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            t.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
+            log_error.error(t.getStackTrace());
 
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch ( Exception e) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PrintStream pinrtStream = new PrintStream(out);
             e.printStackTrace(pinrtStream);
-            System.out.println(out.toString());
             log_error.error(e.getStackTrace());
+
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<String>(renewalJwt, HttpStatus.OK);

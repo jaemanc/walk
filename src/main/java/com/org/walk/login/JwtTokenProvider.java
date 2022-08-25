@@ -31,7 +31,10 @@ public class JwtTokenProvider {
     private String secretKey = "Son_of_iksan";
 
     // 토큰 유효시간 60분
-    private long tokenValidTime = 60 * 60 * 1000L;
+     private long tokenValidTime = 60 * 60 * 1000L;
+
+    // 만료 테스트용
+    // private long tokenValidTime = 100L;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
 //    @PostConstruct
@@ -41,11 +44,8 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
     public String createToken(UserDto userDto) {
-
         Claims claims = Jwts.claims().setSubject(userDto.getName()); // JWT payload 에 저장되는 정보단위
         // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
-
-        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
 
         claims.put("id", userDto.getUserId());
         claims.put("name",userDto.getName());
@@ -74,10 +74,7 @@ public class JwtTokenProvider {
         UserDto userDto = userService.getUser(_id);
 
         Claims claims = Jwts.claims().setSubject(userDto.getName()); // JWT payload 에 저장되는 정보단위
-        // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
-
-        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        claims.put("id", _id);
+        claims.put("id", userDto.getUserId());
         claims.put("name",userDto.getName());
 
         Date now = new Date();

@@ -34,13 +34,18 @@ public class PostController {
             @RequestParam(required = false) String keyword
             ,@RequestParam(required = false, defaultValue = "0") long boardId
             ,@RequestParam(required = false, defaultValue = "0" ) int page
-            ,@RequestParam(required = false, defaultValue = "10") int size
+            ,@RequestParam(required = false, defaultValue = "0") int size
 
     ) {
 
         List<PostListResponseDto> postList = null;
 
         try {
+
+            if (size < 1) {
+                // 0값일 경우 max 사이즈 지정.
+                size = 1000;
+            }
 
             Pageable pageable = PageRequest.of(page, size);
 
