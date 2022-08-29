@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
@@ -49,6 +50,13 @@ public class CourseEntity {
     @Comment("삭제 여부")
     private Character isDeleted;
 
+    @CreatedDate
+    @Column(name="created_at")
+    private Date createdAt;
+
+    @Column(name="creater_id")
+    private long createrId;
+
     @Column(name="updater", length = 20)
     @Comment("수정자")
     private String updater;
@@ -63,7 +71,7 @@ public class CourseEntity {
     private Long fileId;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id", insertable = false, updatable = false)
+    @JoinColumn(name="user_id", referencedColumnName = "user_id", insertable = false, updatable = false, unique = false)
     private UserEntity user;
 
     @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
@@ -74,9 +82,10 @@ public class CourseEntity {
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private Set<FileEntity> files;
 
-
     @Builder
-    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files) {
+    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted,
+                        Date createdAt, long createrId, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files
+    ) {
         this.courseId = courseId;
         this.coordinates_id = coordinates_id;
         this.courseName = courseName;
@@ -84,6 +93,8 @@ public class CourseEntity {
         this.fileId = fileId;
         this.userId = userId;
         this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.createrId = createrId;
         this.updater = updater;
         this.updatedAt = updatedAt;
         this.user = user;
