@@ -138,4 +138,45 @@ public class CourseController {
 
     }
 
+    @PostMapping(value = "/dummy")
+    @ApiOperation(value = "course dummy..." , notes = " 코스 더미 등록 ")
+    public ResponseEntity<?> dummyCourse (
+    ){
+
+
+        try {
+
+            for (int i = 0 ; i < 1000; i ++ ) {
+//                CourseEntity courseEntity = CourseEntity.builder()
+//                        .name("name"+i)
+//                        .address("addr"+i)
+//                        .phone("phone"+i)
+//                        .email("email"+i+"@gmail.com")
+//                        .password("passwd"+i)
+//                        .build();
+
+                CourseDto courseDto = new CourseDto();
+
+                courseDto.setCourseKeyword("Course_keyword_"+i);
+                courseDto.setCourseName("Course_name_"+i);
+                courseDto.setIsDeleted('N');
+                courseDto.setCoordinates_id(1);
+                courseDto.setUserId(24);
+
+                // File 먼저 있고 --> course 등록해야하므로,,,, 음...
+                // courseDto.setFileId();
+                courseService.postCourse(courseDto);
+            }
+
+        } catch ( Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 }

@@ -42,7 +42,6 @@ public class PostEntity {
 
     @CreatedDate
     @Column(name="created_at")
-
     private Date createdAt;
 
     @Column(name="creater_id")
