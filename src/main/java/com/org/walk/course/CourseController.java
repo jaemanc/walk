@@ -3,6 +3,7 @@ package com.org.walk.course;
 import com.org.walk.course.dto.CourseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +53,40 @@ public class CourseController {
 
         return new ResponseEntity<List<CourseDto>>(courseList, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/naveropenapi/{start}/{goal}/{option}")
+    @ApiOperation(value = "get courses", notes = "naver 길 찾기 api 호출")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="start", value = "출발 위치 y , x"),
+        @ApiImplicitParam(name="goal", value = " 도착 위치 y , x"),
+        @ApiImplicitParam(name="option", value = " 옵션", defaultValue = "trafast")
+    })
+    public ResponseEntity<?> getDirectionsApi(
+        @PathVariable(required = true) String start,
+        @PathVariable(required = true) String goal,
+        @PathVariable(required = false) String option
+    ) {
+        try {
+            // 1. naver map api 호출
+            if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
+                // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
+                // ex) 우리나라 위도,경도에 해당하지 않는 경우.
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // 2. 결과 값을 client로 리턴.  naver api는 자동차 기준 경로를 제공한다.
+            String walkResponse = courseService.getDirectionsApi(start, goal, option);
+
+            // 3. Tmap ( 도보 길찾기 기능... 하ㅣ...;......
+            String carResponse = courseService.getWalkPathApi(start, goal, option);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

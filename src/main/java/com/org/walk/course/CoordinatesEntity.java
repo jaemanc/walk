@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -45,15 +46,27 @@ public class CoordinatesEntity {
     private long destLongitude;
 
     @Comment("위도_경유")
-    @Column(name = "stopover_latitude", precision=9, scale=7 , columnDefinition = "decimal(9,7)")
-    private long stopoverLatitude;
+    @Column(name = "stopover_latitude", columnDefinition = "varchar(10000)")
+    private String stopoverLatitude;
 
     @Comment("경도_경유")
-    @Column(name = "stopover_longitude", precision=10, scale=7 , columnDefinition = "decimal(10,7)")
-    private long stopoverLongitude;
+    @Column(name = "stopover_longitude", columnDefinition = "varchar(10000)")
+    private String stopoverLongitude;
+
+    @Comment("경유_경로")
+    @Column(name = "transit_route", columnDefinition = "varchar(10000)")
+    private String transitRoute;
+
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="coordinates_id", referencedColumnName = "coordinates_id")
+    private Set<FileEntity> files;
+
+    @Comment("소요_시간")
+    @Column(name = "required_time")
+    private Date requiredTime;
 
     @Builder
-    public CoordinatesEntity(long coordinatesId, long startLatitude, long startLongitude, long destLatitude, long destLongitude, long stopoverLatitude, long stopoverLongitude, Set<FileEntity> files) {
+    public CoordinatesEntity(long coordinatesId, long startLatitude, long startLongitude, long destLatitude, long destLongitude, String stopoverLatitude, String stopoverLongitude, String transitRoute, Set<FileEntity> files, Date requiredTime) {
         this.coordinatesId = coordinatesId;
         this.startLatitude = startLatitude;
         this.startLongitude = startLongitude;
@@ -61,11 +74,10 @@ public class CoordinatesEntity {
         this.destLongitude = destLongitude;
         this.stopoverLatitude = stopoverLatitude;
         this.stopoverLongitude = stopoverLongitude;
+        this.transitRoute = transitRoute;
         this.files = files;
-    }
+        this.requiredTime = requiredTime;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="coordinates_id", referencedColumnName = "coordinates_id")
-    private Set<FileEntity> files;
+    }
 
 }

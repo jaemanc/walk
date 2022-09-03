@@ -20,6 +20,8 @@ public interface CourseService {
 
     void deleteCourse(long id) throws Exception;
 
+    String getDirectionsApi(String start, String goal, String option) throws Exception;
 
+    String getWalkPathApi(String start, String goal, String option) throws Exception;
 
 }
