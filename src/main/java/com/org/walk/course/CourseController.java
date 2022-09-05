@@ -55,8 +55,8 @@ public class CourseController {
 
     }
 
-    @GetMapping("/naveropenapi/{start}/{goal}/{option}")
-    @ApiOperation(value = "get courses", notes = "naver 길 찾기 api 호출")
+    @GetMapping("/car-path/{start}/{goal}/{option}")
+    @ApiOperation(value = "get courses", notes = "naver 길 찾기 api 호출 (차량) ")
     @ApiImplicitParams({
         @ApiImplicitParam(name="start", value = "출발 위치 y , x"),
         @ApiImplicitParam(name="goal", value = " 도착 위치 y , x"),
@@ -68,6 +68,10 @@ public class CourseController {
         @PathVariable(required = false) String option
     ) {
         try {
+
+            System.out.println(" 사용자 리퀘스트 값 체크 합니다. : " + start + " / " + goal + " / " + option );
+
+
             // 1. naver map api 호출
             if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
                 // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
@@ -78,8 +82,6 @@ public class CourseController {
             // 2. 결과 값을 client로 리턴.  naver api는 자동차 기준 경로를 제공한다.
             String walkResponse = courseService.getDirectionsApi(start, goal, option);
 
-            // 3. Tmap ( 도보 길찾기 기능... 하ㅣ...;......
-            String carResponse = courseService.getWalkPathApi(start, goal, option);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +90,41 @@ public class CourseController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/walk-path/{start}/{goal}/{option}")
+    @ApiOperation(value = "get walk Path", notes = "tmap 길 찾기 api 호출 (도보) ")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="start", value = "출발 위치 y , x"),
+            @ApiImplicitParam(name="goal", value = " 도착 위치 y , x"),
+            @ApiImplicitParam(name="option", value = " 옵션", defaultValue = "trafast")
+    })
+    public ResponseEntity<?> getWalkPathApi(
+            @PathVariable(required = true) String start,
+            @PathVariable(required = true) String goal,
+            @PathVariable(required = false) String option
+    ) {
+
+        String walk = "";
+
+        try {
+            // 1. naver map api 호출
+            if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
+                // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
+                // ex) 우리나라 위도,경도에 해당하지 않는 경우.
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // 1. Tmap ( 도보 길찾기 API 호출)
+            walk = courseService.getWalkPathApi(start, goal, option);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(walk, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(walk, HttpStatus.OK);
+    }
+
 
 
     @PostMapping

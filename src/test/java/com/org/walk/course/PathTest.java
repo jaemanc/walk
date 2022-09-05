@@ -19,6 +19,10 @@ class PathTest {
 
         String uriPath = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving";
         String start = "126.844856,37.5407361";
+
+        String startX = start.substring(0,start.indexOf(","));
+        System.out.println("여기여..? "  + startX);
+
         String goal = "126.8980711,37.5763214";
         String option = "trafast";
 
