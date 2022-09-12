@@ -7,6 +7,9 @@ import com.org.walk.course.dto.CourseDto;
 import com.org.walk.course.mapper.CourseMapper;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import reactor.netty.http.client.HttpClient;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.net.http.HttpHeaders;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -146,8 +150,8 @@ public class CourseServiceImpl implements CourseService {
                         .queryParam("startY", startY)
                         .queryParam("endX",endX)
                         .queryParam("endY",endY)
-                        .queryParam("reqCoordType", "WGS84GEO")
-                        .queryParam("resCoordType","EPSG3857")
+                        .queryParam("reqCoordType", "WGS84GEO") // --> GRS80으로 요청 가능한지 확인 필요..?
+                        .queryParam("resCoordType","WGS84GEO")
                         .queryParam("startName","출발지")
                         .queryParam("endName","도착지")
                         .build())
@@ -155,7 +159,26 @@ public class CourseServiceImpl implements CourseService {
                 .bodyToMono(String.class)// 응답 값을 하나만,
                 .block(); // 동기로 받는다.
 
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
+        JSONArray coordinates = (JSONArray) jsonObject.get("coordinates");
+
+
+        String[] temps = new String[coordinates.size()];
+        for (int i = 0; i < coordinates.size(); i ++ ) {
+            temps[i] = coordinates.get(i).toString();
+        }
+
+
+        System.out.println(" 해치웠나..?! " + Arrays.toString(temps));
+
+
+
         System.out.println(" return values... " + response);
+
+        // 데이터에서 필요한 정보만 파싱해서 리턴.
+
+
 
         return response;
     }

@@ -107,7 +107,6 @@ public class CourseController {
         String walk = "";
 
         try {
-            // 1. naver map api 호출
             if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
                 // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
                 // ex) 우리나라 위도,경도에 해당하지 않는 경우.

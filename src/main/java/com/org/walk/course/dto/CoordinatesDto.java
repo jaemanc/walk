@@ -1,10 +1,7 @@
 package com.org.walk.course.dto;
 
 import com.org.walk.file.FileEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,6 +9,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class CoordinatesDto {
 
     private long coordinatesId;
