@@ -1,15 +1,14 @@
 package com.org.walk;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CourseLatParseTest {
 
@@ -372,32 +371,30 @@ public class CourseLatParseTest {
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
-
         JSONArray jsonVo = (JSONArray) jsonObject.get("features");
-        System.out.println(jsonVo.get(0));
 
+        List<String> target = new ArrayList<>();
 
-        List<Integer> arrays = new ArrayList<>();
         for (int i = 0; i < jsonVo.size(); i++) {
 
             JSONObject geometrys = (JSONObject) jsonVo.get(i);
             JSONObject geos = (JSONObject) jsonParser.parse(geometrys.toJSONString());
             JSONObject coordinatess = (JSONObject) geos.get("geometry");
             JSONObject coordis = (JSONObject) jsonParser.parse(coordinatess.toJSONString());
-            // System.out.println(tttttt.toJSONString());
-            // ==> {"coordinates":[14126068,4519988],"type":"Point"} 형식으로 나옴.
-            // System.out.println(tttttt.toJSONString());
-            // ==> {"coordinates":[[14126080,4520002],[14126068,4519988]],"type":"LineString"} 형식으로 나옴.
-
-
             String temp = coordis.get("coordinates").toString();
 
-            System.out.println(temp);
+            temp = temp.replace("[", "").replace("]", "");
+            String[] ttemp = temp.split(",");
+
+            for (int j = 0 ; j < ttemp.length; j ++) {
+                target.add(ttemp[j]);
+            }
+            // target.add(Arrays.toString(temp.split(",")));
         }
 
-
-
-
+        for (int j = 0 ; j < target.size(); j ++) {
+            System.out.println(target.get(j));
+        }
 
 
 
