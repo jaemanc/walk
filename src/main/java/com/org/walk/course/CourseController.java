@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 @RequestMapping("/course")
@@ -91,22 +93,21 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/walk-path/{start}/{goal}/{option}")
+    @GetMapping("/walk-path")
     @ApiOperation(value = "get walk Path", notes = "tmap 길 찾기 api 호출 (도보) ")
     @ApiImplicitParams({
             @ApiImplicitParam(name="start", value = "출발 위치 y , x"),
             @ApiImplicitParam(name="goal", value = " 도착 위치 y , x"),
-            @ApiImplicitParam(name="option", value = " 옵션", defaultValue = "trafast")
     })
     public ResponseEntity<?> getWalkPathApi(
-            @PathVariable(required = true) String start,
-            @PathVariable(required = true) String goal,
-            @PathVariable(required = false) String option
+            String start,
+            String goal
     ) {
 
-        String walk = "";
+        List<String> walk = null;
 
         try {
+            System.out.println("start :: " + start + " / goal :: " + goal);
             if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
                 // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
                 // ex) 우리나라 위도,경도에 해당하지 않는 경우.
@@ -114,10 +115,18 @@ public class CourseController {
             }
 
             // 1. Tmap ( 도보 길찾기 API 호출)
-            walk = courseService.getWalkPathApi(start, goal, option);
+            walk = courseService.getWalkPathApi(start, goal);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (walk == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception t) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            t.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
+            log_error.error(t.getStackTrace());
             return new ResponseEntity<>(walk, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

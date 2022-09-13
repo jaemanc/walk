@@ -25,6 +25,7 @@ import reactor.netty.http.client.HttpClient;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.net.http.HttpHeaders;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public String getWalkPathApi(String start, String goal, String option) throws Exception {
+    public List<String> getWalkPathApi(String start, String goal) throws Exception {
 
         String uriPath = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result";
 
@@ -135,11 +136,11 @@ public class CourseServiceImpl implements CourseService {
         CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath),CourseConfigDto.class);
 
 
-        String startX = start.substring(0,start.indexOf(","));
-        String startY = start.substring(start.indexOf(",")+1,start.length());
+        String startY = start.substring(0,start.indexOf(","));
+        String startX = start.substring(start.indexOf(",")+1,start.length());
 
-        String endX = goal.substring(0,goal.indexOf(","));
-        String endY = goal.substring(goal.indexOf(",")+1,goal.length());
+        String endY = goal.substring(0,goal.indexOf(","));
+        String endX = goal.substring(goal.indexOf(",")+1,goal.length());
 
 
         System.out.println("start x : " + startX + " / start y : " + startY + " / end x : " + endX + " / end y : " + endY );
@@ -159,27 +160,32 @@ public class CourseServiceImpl implements CourseService {
                 .bodyToMono(String.class)// 응답 값을 하나만,
                 .block(); // 동기로 받는다.
 
+        System.out.println(response);
+
+
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
-        JSONArray coordinates = (JSONArray) jsonObject.get("coordinates");
+        JSONArray jsonVo = (JSONArray) jsonObject.get("features");
 
+        List<String> target = new ArrayList<>();
 
-        String[] temps = new String[coordinates.size()];
-        for (int i = 0; i < coordinates.size(); i ++ ) {
-            temps[i] = coordinates.get(i).toString();
+        for (int i = 0; i < jsonVo.size(); i++) {
+
+            JSONObject geometrys = (JSONObject) jsonVo.get(i);
+            JSONObject geos = (JSONObject) jsonParser.parse(geometrys.toJSONString());
+            JSONObject coordinatess = (JSONObject) geos.get("geometry");
+            JSONObject coordis = (JSONObject) jsonParser.parse(coordinatess.toJSONString());
+            String temp = coordis.get("coordinates").toString();
+
+            temp = temp.replace("[", "").replace("]", "");
+            String[] ttemp = temp.split(",");
+
+            for (int j = 0 ; j < ttemp.length; j ++) {
+                target.add(ttemp[j]);
+            }
         }
 
 
-        System.out.println(" 해치웠나..?! " + Arrays.toString(temps));
-
-
-
-        System.out.println(" return values... " + response);
-
-        // 데이터에서 필요한 정보만 파싱해서 리턴.
-
-
-
-        return response;
+        return target;
     }
 }

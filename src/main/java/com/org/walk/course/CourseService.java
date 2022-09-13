@@ -22,6 +22,6 @@ public interface CourseService {
 
     String getDirectionsApi(String start, String goal, String option) throws Exception;
 
-    String getWalkPathApi(String start, String goal, String option) throws Exception;
+    List<String> getWalkPathApi(String start, String goal) throws Exception;
 
 }
