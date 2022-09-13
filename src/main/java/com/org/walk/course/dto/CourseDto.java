@@ -38,7 +38,7 @@ public class CourseDto {
 
     private UserEntity user;
 
-    private CoordinatesEntity coordinates;
+    private CoordinatesDto coordinates;
 
     private Set<FileEntity> files;
 
