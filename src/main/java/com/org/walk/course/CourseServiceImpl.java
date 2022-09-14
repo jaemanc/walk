@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.course.dto.CourseConfigDto;
 import com.org.walk.course.dto.CourseDto;
+import com.org.walk.course.dto.CoursePathDto;
+import com.org.walk.course.dto.CoursePostDto;
+import com.org.walk.course.mapper.CoordinatesMapper;
 import com.org.walk.course.mapper.CourseMapper;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -15,6 +18,7 @@ import org.springframework.boot.autoconfigure.web.reactive.function.client.WebCl
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContext;
@@ -38,6 +42,9 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private CoordinatesRepository coordinatesRepository;
+
     @Override
     public List<CourseDto> getCourseList(String keyword, Pageable pageable) throws Exception {
 
@@ -52,13 +59,40 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto postCourse(CourseDto courseDto) throws Exception {
+    public CourseDto postCourse(CoursePostDto coursePostDto) throws Exception {
+         /*
+            1. tb_coordinates - post
+            2. tb_course - post  ( tb_coordinates의 ciirdubates_id 값이 필요함 )
+         */
 
-        CourseEntity courseEntity = CourseMapper.mapper.toEntity(courseDto);
+        // 좌표 값부터 등록
+        CoordinatesEntity coordinatesEntity = CoordinatesEntity.builder()
+                .destLatitude(coursePostDto.getCoordinates().getDestLatitude())
+                .destLongitude(coursePostDto.getCoordinates().getDestLongitude())
+                .startLatitude(coursePostDto.getCoordinates().getStartLatitude())
+                .startLongitude(coursePostDto.getCoordinates().getStartLongitude())
+                .transitRoute(coursePostDto.getCoordinates().getTransitRoute())
+                .requiredTime(coursePostDto.getTime())
+                .distance(coursePostDto.getDistance())
+                .build();
 
+        coordinatesEntity = coordinatesRepository.save(coordinatesEntity);
+
+        CourseEntity courseEntity = CourseEntity.builder()
+                .courseName(coursePostDto.getCourseName())
+                .courseKeyword(coursePostDto.getCourseKeyword())
+                .coordinates_id(coordinatesEntity.getCoordinatesId())
+                .userId(coursePostDto.getUserId())
+                .createrId(coursePostDto.getUserId())
+                .isDeleted('N')
+                .build();
+
+        // course 둥록
         courseRepository.save(courseEntity);
 
-        courseDto = CourseMapper.mapper.toDto(courseEntity);
+        courseEntity = courseRepositoryCustom.getCourse(courseEntity.getCourseId());
+
+        CourseDto courseDto = CourseMapper.mapper.toDto(courseEntity);
 
         return courseDto;
     }
@@ -113,7 +147,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<String> getWalkPathApi(String start, String goal) throws Exception {
+    public CoursePathDto getWalkPathApi(String start, String goal) throws Exception {
 
         String uriPath = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result";
 
@@ -135,15 +169,11 @@ public class CourseServiceImpl implements CourseService {
 
         CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath),CourseConfigDto.class);
 
-
         String startY = start.substring(0,start.indexOf(","));
         String startX = start.substring(start.indexOf(",")+1,start.length());
 
         String endY = goal.substring(0,goal.indexOf(","));
         String endX = goal.substring(goal.indexOf(",")+1,goal.length());
-
-
-        System.out.println("start x : " + startX + " / start y : " + startY + " / end x : " + endX + " / end y : " + endY );
 
         String response = client.get().uri(uriBuilder -> uriBuilder.path("")
                         .queryParam ("appKey", courseConfigDto.getClientId())
@@ -151,7 +181,7 @@ public class CourseServiceImpl implements CourseService {
                         .queryParam("startY", startY)
                         .queryParam("endX",endX)
                         .queryParam("endY",endY)
-                        .queryParam("reqCoordType", "WGS84GEO") // --> GRS80으로 요청 가능한지 확인 필요..?
+                        .queryParam("reqCoordType", "WGS84GEO")
                         .queryParam("resCoordType","WGS84GEO")
                         .queryParam("startName","출발지")
                         .queryParam("endName","도착지")
@@ -160,32 +190,50 @@ public class CourseServiceImpl implements CourseService {
                 .bodyToMono(String.class)// 응답 값을 하나만,
                 .block(); // 동기로 받는다.
 
-        System.out.println(response);
+        System.out.println(" 리턴 값 : " + response);
 
+        if (response.contains("Exceeded limit on max bytes to buffer")) {
+            System.out.println(" 너무 먼 거리는 찾을 수가 없어.. 그거는 도와줄 수가 없어...");
+            return null;
+        }
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
         JSONArray jsonVo = (JSONArray) jsonObject.get("features");
 
-        List<String> target = new ArrayList<>();
-
+        List<String> transitCoordinates = new ArrayList<>();
+        Long allTime = 0L;
+        Long totalDistance = 0L;
         for (int i = 0; i < jsonVo.size(); i++) {
 
-            JSONObject geometrys = (JSONObject) jsonVo.get(i);
-            JSONObject geos = (JSONObject) jsonParser.parse(geometrys.toJSONString());
-            JSONObject coordinatess = (JSONObject) geos.get("geometry");
-            JSONObject coordis = (JSONObject) jsonParser.parse(coordinatess.toJSONString());
+            JSONObject jsonObj = (JSONObject) jsonParser.parse(((JSONObject) jsonVo.get(i)).toJSONString());
+            JSONObject geometry = (JSONObject) jsonObj.get("geometry");
+            JSONObject coordis = (JSONObject) jsonParser.parse(geometry.toJSONString());
             String temp = coordis.get("coordinates").toString();
 
             temp = temp.replace("[", "").replace("]", "");
             String[] ttemp = temp.split(",");
 
             for (int j = 0 ; j < ttemp.length; j ++) {
-                target.add(ttemp[j]);
+                transitCoordinates.add(ttemp[j]);
             }
+
+            JSONObject times = (JSONObject) jsonObj.get("properties");
+            JSONObject timeVal = (JSONObject) jsonParser.parse(times.toJSONString());
+
+            // 초 단위.
+            if (!ObjectUtils.isEmpty(timeVal.get("totalTime"))) {
+                allTime = Long.valueOf(String.valueOf(timeVal.get("totalTime")));
+            }
+
+            // M 단위.
+            if (!ObjectUtils.isEmpty(timeVal.get("totalDistance"))) {
+                totalDistance = Long.valueOf(String.valueOf(timeVal.get("totalDistance")));
+            }
+
         }
 
 
-        return target;
+        return new CoursePathDto(transitCoordinates, allTime, totalDistance);
     }
 }

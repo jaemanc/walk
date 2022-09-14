@@ -2,6 +2,8 @@ package com.org.walk.course;
 
 
 import com.org.walk.course.dto.CourseDto;
+import com.org.walk.course.dto.CoursePathDto;
+import com.org.walk.course.dto.CoursePostDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +16,7 @@ public interface CourseService {
     @Transactional
     CourseDto getCourse(long id) throws Exception;
 
-    CourseDto postCourse(CourseDto courseDto) throws Exception;
+    CourseDto postCourse(CoursePostDto courseDto) throws Exception;
 
     void putCourse(CourseDto courseDto) throws Exception;
 
@@ -22,6 +24,6 @@ public interface CourseService {
 
     String getDirectionsApi(String start, String goal, String option) throws Exception;
 
-    List<String> getWalkPathApi(String start, String goal) throws Exception;
+    CoursePathDto getWalkPathApi(String start, String goal) throws Exception;
 
 }

@@ -2,10 +2,7 @@ package com.org.walk.course.dto;
 
 import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
@@ -14,6 +11,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class CoursePostDto {
 
     private long courseId;
@@ -32,6 +30,10 @@ public class CoursePostDto {
 
     private Date updatedAt;
 
-    private CoordinatesDto coordinates;
+    private Long distance;
+
+    private Long time;
+
+    private CoordinatesPostDto coordinates;
 
 }

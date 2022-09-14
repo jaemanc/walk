@@ -1,6 +1,8 @@
 package com.org.walk.course;
 
 import com.org.walk.course.dto.CourseDto;
+import com.org.walk.course.dto.CoursePathDto;
+import com.org.walk.course.dto.CoursePostDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -104,7 +106,7 @@ public class CourseController {
             String goal
     ) {
 
-        List<String> walk = null;
+        CoursePathDto coursePathDto = null;
 
         try {
             System.out.println("start :: " + start + " / goal :: " + goal);
@@ -114,10 +116,10 @@ public class CourseController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            // 1. Tmap ( 도보 길찾기 API 호출)
-            walk = courseService.getWalkPathApi(start, goal);
+            coursePathDto = courseService.getWalkPathApi(start, goal);
 
-            if (walk == null) {
+            if (coursePathDto == null) {
+                // 너무 먼 거리를 입력해도 다음과 같음.
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
@@ -127,27 +129,28 @@ public class CourseController {
             t.printStackTrace(pinrtStream);
             System.out.println(out.toString());
             log_error.error(t.getStackTrace());
-            return new ResponseEntity<>(walk, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(coursePathDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(walk, HttpStatus.OK);
+        return new ResponseEntity<>(coursePathDto, HttpStatus.OK);
     }
 
 
 
-    @PostMapping
+    @PostMapping(value = "")
     @ApiOperation(value = "post course", notes = "코스 등록")
-    public ResponseEntity<CourseDto> postCourse(
-            @RequestBody CourseDto courseDto
+    public ResponseEntity<?> postCourse(
+            @RequestBody CoursePostDto coursePostDto
     ) {
 
+        CourseDto courseDto = null;
         try {
 
-            courseDto = courseService.postCourse(courseDto);
+            courseDto = courseService.postCourse(coursePostDto);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<CourseDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            return new ResponseEntity<CourseDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<CourseDto>(courseDto, HttpStatus.OK);
@@ -224,7 +227,6 @@ public class CourseController {
     public ResponseEntity<?> dummyCourse (
     ){
 
-
         try {
 
             for (int i = 0 ; i < 1000; i ++ ) {
@@ -246,7 +248,7 @@ public class CourseController {
 
                 // File 먼저 있고 --> course 등록해야하므로,,,, 음...
                 // courseDto.setFileId();
-                courseService.postCourse(courseDto);
+                // courseService.postCourse(courseDto);
             }
 
         } catch ( Exception e) {

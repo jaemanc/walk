@@ -54,5 +54,17 @@ public class CourseRepositoryCustom {
 
     }
 
+    public CourseEntity getCourse(long courseId) {
+
+            return queryFactory.
+                select(qCourseEntity)
+                .from(qCourseEntity)
+                .leftJoin(qCourseEntity.coordinates, qCoordinatesEntity)
+                .fetchJoin()
+                .distinct()
+                .where(qCourseEntity.courseId.eq(courseId))
+                .fetchOne();
+    }
 
 }
+

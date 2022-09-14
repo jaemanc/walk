@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -374,29 +375,42 @@ public class CourseLatParseTest {
         JSONArray jsonVo = (JSONArray) jsonObject.get("features");
 
         List<String> target = new ArrayList<>();
+        Long allTime = 0L;
+        Long totalDistance = 0L;
 
         for (int i = 0; i < jsonVo.size(); i++) {
 
-            JSONObject geometrys = (JSONObject) jsonVo.get(i);
-            JSONObject geos = (JSONObject) jsonParser.parse(geometrys.toJSONString());
-            JSONObject coordinatess = (JSONObject) geos.get("geometry");
-            JSONObject coordis = (JSONObject) jsonParser.parse(coordinatess.toJSONString());
+            // 경로 파싱
+            JSONObject jsonOb = (JSONObject) jsonVo.get(i);
+            JSONObject JsonObj = (JSONObject) jsonParser.parse(jsonOb.toJSONString());
+            JSONObject geometry = (JSONObject) JsonObj.get("geometry");
+            JSONObject coordis = (JSONObject) jsonParser.parse(geometry.toJSONString());
             String temp = coordis.get("coordinates").toString();
 
             temp = temp.replace("[", "").replace("]", "");
-            String[] ttemp = temp.split(",");
+            String[] tempArray = temp.split(",");
 
-            for (int j = 0 ; j < ttemp.length; j ++) {
-                target.add(ttemp[j]);
+            for (int j = 0 ; j < tempArray.length; j ++) {
+                target.add(tempArray[j]);
             }
-            // target.add(Arrays.toString(temp.split(",")));
+
+            JSONObject times = (JSONObject) JsonObj.get("properties");
+            JSONObject timeVal = (JSONObject) jsonParser.parse(times.toJSONString());
+
+            if (!ObjectUtils.isEmpty(timeVal.get("totalTime"))) {
+                allTime = Long.valueOf(String.valueOf(timeVal.get("totalTime")));
+            }
+
+            if (!ObjectUtils.isEmpty(timeVal.get("totalDistance"))) {
+                totalDistance = Long.valueOf(String.valueOf(timeVal.get("totalDistance")));
+            }
+
+
+
         }
 
-        for (int j = 0 ; j < target.size(); j ++) {
-            System.out.println(target.get(j));
-        }
-
-
+        System.out.println(" 해치웠나..?! tim : " + allTime);
+        System.out.println(" 해치웠나..?! dist : "  + totalDistance);
 
     }
 
