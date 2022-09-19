@@ -33,7 +33,7 @@ public class FileController {
     public ResponseEntity<?> uploadFile(
             HttpServletResponse httpServlet
             , String category
-            , File[] files
+            , File files
     ) {
 
         UserDto userDto = new UserDto();
@@ -44,7 +44,7 @@ public class FileController {
             // httpServlet에서 조회 - > 업로드한 파일 셋팅 -> 업데이트
 
             // aws s3 file upload
-            List<FileDto> uploadedFiles = fileService.uploadFiles(files, category );
+            FileDto uploadedFiles = fileService.uploadFile(files, category );
 
 
         } catch (Exception e) {

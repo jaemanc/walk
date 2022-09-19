@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.Date;
-
 
 @Getter
 @Setter
@@ -27,5 +25,14 @@ public class FileDto {
     private Character isDeleted;
 
     private Long userId;
+
+    private String fileLatitude;
+
+    private String fileLongitude;
+
+    private Long coordinatesId;
+
+    private Long courseId;
+
 
 }

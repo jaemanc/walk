@@ -78,13 +78,9 @@ public class CourseEntity {
     @JoinColumn(name="coordinates_id", insertable = false, updatable = false)
     private CoordinatesEntity coordinates;
 
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id", referencedColumnName = "user_id")
-    private Set<FileEntity> files;
-
     @Builder
     public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted,
-                        Date createdAt, long createrId, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates, Set<FileEntity> files
+                        Date createdAt, long createrId, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates
     ) {
         this.courseId = courseId;
         this.coordinates_id = coordinates_id;
@@ -99,6 +95,5 @@ public class CourseEntity {
         this.updatedAt = updatedAt;
         this.user = user;
         this.coordinates = coordinates;
-        this.files = files;
     }
 }

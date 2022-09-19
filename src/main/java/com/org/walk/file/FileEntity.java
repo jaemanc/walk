@@ -13,8 +13,6 @@ import java.util.Date;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_file")
 @DynamicUpdate
@@ -69,12 +67,18 @@ public class FileEntity {
     @JoinColumn(name="course_id", insertable = false, updatable = false)
     private CourseEntity course;
 
-    public FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId) {
-    }
-
     @Builder
-    public FileEntity FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId) {
-        return new FileEntity(fileId, fileSize, uploadDate, fileLoc, isDeleted, userId, fileLatitude, fileLongitude, coordinatesId, courseId);
+    public FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId, CourseEntity course) {
+        this.fileId = fileId;
+        this.fileSize = fileSize;
+        this.uploadDate = uploadDate;
+        this.fileLoc = fileLoc;
+        this.isDeleted = isDeleted;
+        this.userId = userId;
+        this.fileLatitude = fileLatitude;
+        this.fileLongitude = fileLongitude;
+        this.coordinatesId = coordinatesId;
+        this.courseId = courseId;
+        this.course = course;
     }
-
 }

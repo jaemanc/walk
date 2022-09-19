@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
 
 
             // DB에 file upload 기록.
-            FileEntity fileEntity = FileEntity.builder()
+        /*    FileEntity fileEntity = FileEntity.builder()
                     .fileId()
                     .fileLoc()
                     .fileSize()
@@ -66,7 +66,7 @@ public class FileServiceImpl implements FileService {
                     .coordinatesId()
                     .isDeleted('N')
                     .courseId()
-                    .build();
+                    .build();*/
 
 
 

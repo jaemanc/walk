@@ -14,7 +14,6 @@ import java.util.Date;
 @Entity
 @Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_board")
 @DynamicUpdate
@@ -41,4 +40,12 @@ public class BoardEntity {
     @Column(name="updated_at")
     private Date updatedAt;
 
+    @Builder
+    public BoardEntity(Long boardId, String boardName, Character isDeleted, Date createdAt, Date updatedAt) {
+        this.boardId = boardId;
+        this.boardName = boardName;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

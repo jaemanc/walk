@@ -79,13 +79,13 @@ public class UserRepositoryCustom {
                 .fetch();*/
 
         // fetch 결과가 1이 나오기 때문에 메모리 적재 위험이 없음.
-        List<UserEntity> user = queryFactory.selectFrom(qUserEntity)
+       /* List<UserEntity> user = queryFactory.selectFrom(qUserEntity)
                 .leftJoin(qUserEntity.file, qFileEntity)
                 .where(qFileEntity.user.userId.eq(id))
                 .limit(5)
-                .fetch();
+                .fetch();*/
 
-        return user;
+        return null;
     }
 
 
