@@ -28,7 +28,6 @@ import java.util.List;
 public class CourseController {
 
     private final Logger log_error = LogManager.getLogger("com.error");
-    private final Logger log_user = LogManager.getLogger("com.user");
 
     @Autowired
     CourseServiceImpl courseService;

@@ -17,8 +17,6 @@ public class FileDto {
 
     private Long fileId;
 
-    private String fileCategory;
-
     private Long fileSize;
 
     @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")

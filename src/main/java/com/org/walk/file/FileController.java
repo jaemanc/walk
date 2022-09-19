@@ -46,10 +46,6 @@ public class FileController {
             // aws s3 file upload
             List<FileDto> uploadedFiles = fileService.uploadFiles(files, category );
 
-            //userDto.setFiles(uploadedFiles);
-
-            // db history log
-            fileService.uploadFilesHist(userDto);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,47 +8,78 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.walk.course.CoordinatesEntity;
+import com.org.walk.course.dto.CourseConfigDto;
 import com.org.walk.file.dto.FileDto;
-import com.org.walk.user.dto.UserDto;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.List;
 
 @Service
 public class FileServiceImpl implements FileService {
 
+    private final Logger log_error = LogManager.getLogger("com.error");
+    private final Logger log_file = LogManager.getLogger("com.file");
+
+    @Autowired
+    FileRepository fileRepository;
 
     @Override
-    public List<FileDto> uploadFiles(File[] files, String category) {
+    public FileDto uploadFile(File file, String category) {
+
+        try {
+
+            String configFilePath = System.getProperty("user.home")+"/walkConfig.json";
+
+            CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath), CourseConfigDto.class);
+
+            String accessKey = courseConfigDto.getAccessKey();
+            String secretKey = courseConfigDto.getSecretKey();
+            String path = courseConfigDto.getPath();
+            String bucketName = courseConfigDto.getBucketName();
+            AWSCredentials tar_credentials = new BasicAWSCredentials(accessKey, secretKey);
+            AmazonS3 tar_client = AmazonS3ClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("enpoint", "region"))
+                    .withPathStyleAccessEnabled(true).build();
 
 
-        String tar_access_key = "aa";
-        String tar_secret_key = "ss";
-        String tar_path = "private/";
-        String tar_bucket_name = "bucket name";
-        AWSCredentials tar_credentials = new BasicAWSCredentials(tar_access_key, tar_secret_key);
-        AmazonS3 tar_client = AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("enpoint", "region"))
-                .withPathStyleAccessEnabled(true).build();
-        // File src_file = new File(src_path);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+file.getName(), file);
+            putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
+            tar_client.putObject(putObjectRequest);
 
-        PutObjectRequest putObjectRequest = new PutObjectRequest(tar_bucket_name, tar_path, "ㅁㄴㅇㄹ");
 
-        putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
+            // DB에 file upload 기록.
+            FileEntity fileEntity = FileEntity.builder()
+                    .fileId()
+                    .fileLoc()
+                    .fileSize()
+                    .fileLatitude()
+                    .fileLongitude()
+                    .coordinatesId()
+                    .isDeleted('N')
+                    .courseId()
+                    .build();
 
-        tar_client.putObject(putObjectRequest);
+
+
+
+        } catch ( Exception e) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            e.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
+            log_error.error(e.getStackTrace());
+        }
 
         return null;
     }
 
-    @Override
-    public void uploadFilesHist(UserDto userDto) {
-
-        // DB에 기록.
-
-
-
-    }
 }

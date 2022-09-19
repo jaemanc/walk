@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface FileService {
 
-    List<FileDto> uploadFiles(File[] files, String category);
-
-    void uploadFilesHist(UserDto userDto);
+    FileDto uploadFile(File file, String category);
 
 }

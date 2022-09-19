@@ -1,21 +1,19 @@
 package com.org.walk.file;
 
-import com.org.walk.course.CoordinatesEntity;
-import com.org.walk.user.UserEntity;
+import com.org.walk.course.CourseEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Builder
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="tb_file")
@@ -29,10 +27,6 @@ public class FileEntity {
     @Column(name="file_id")
     @Comment("파일 ID")
     private Long fileId;
-
-    @Column(name="file_category" ,length = 100)
-    @Comment("파일 카테고리")
-    private String fileCategory;
 
     @Column(name="file_size")
     @Comment("파일 사이즈")
@@ -51,38 +45,36 @@ public class FileEntity {
     @Comment("삭제 여부")
     private Character isDeleted;
 
-    @Column(name="updater", length = 20)
-    @Comment("수정자")
-    private String updater;
-
-    @LastModifiedDate
-    @Column(name="updated_at")
-    private Date updatedAt;
-
     @Column(name="user_id")
     @Comment("사용자 ID")
     private Long userId;
+
+    @Column(name="file_latitude")
+    @Comment("파일 위도")
+    private String fileLatitude;
+
+    @Column(name="file_longitude")
+    @Comment("파일 경도")
+    private String fileLongitude;
 
     @Column(name="coordinates_id")
     @Comment("좌표 ID")
     private Long coordinatesId;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id", insertable = false, updatable = false)
-    private UserEntity user;
+    @Column(name="course_id")
+    @Comment("코스 ID")
+    private Long courseId;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="coordinates_id", insertable = false, updatable = false)
-    private CoordinatesEntity coordinates;
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name="course_id", insertable = false, updatable = false)
+    private CourseEntity course;
 
-    public FileEntity(long fileId, String fileCategory, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId) {
+    public FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId) {
     }
 
     @Builder
-    public static FileEntity createFile(Long fileId, String fileCategory, Long fileSize, Date uploadDate, String fileLoc
-            , char isDeleted, Long userId) {
-        return new FileEntity(fileId, fileCategory, fileSize, uploadDate, fileLoc, isDeleted, userId);
+    public FileEntity FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId) {
+        return new FileEntity(fileId, fileSize, uploadDate, fileLoc, isDeleted, userId, fileLatitude, fileLongitude, coordinatesId, courseId);
     }
-
 
 }

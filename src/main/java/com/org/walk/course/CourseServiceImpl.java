@@ -165,7 +165,7 @@ public class CourseServiceImpl implements CourseService {
                 .build();
 
         // git에 올라가면 안됨. cloud config 등으로 바꿔야 할 수도 있음.
-        String configFilePath = System.getProperty("user.home")+"/walkConfig.json";
+        String configFilePath = new CourseConfigDto().getUserHomePath()+"/walkConfig.json";
 
         CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath),CourseConfigDto.class);
 
