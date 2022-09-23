@@ -1,17 +1,21 @@
 package com.org.walk.file;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.file.dto.FileDto;
 import com.org.walk.user.dto.UserDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -28,30 +32,24 @@ public class FileController {
     private final Logger log_error = LogManager.getLogger("com.error");
     private final Logger log_file = LogManager.getLogger("com.file");
 
-    @GetMapping("")
+    @PostMapping(value = "")
     @ApiOperation(value = "upload files", notes = " 파일 업로드 ")
     public ResponseEntity<?> uploadFile(
-            HttpServletResponse httpServlet
-            , String category
-            , File files
+            @RequestPart(value="file", required = false) MultipartFile file
+            ,FileDto fileDto
     ) {
 
-        UserDto userDto = new UserDto();
-        
+        FileDto uploadedFiles = null;
+
         try {
-
-            //header의 id 값으로 userDto 조회 
-            // httpServlet에서 조회 - > 업로드한 파일 셋팅 -> 업데이트
-
             // aws s3 file upload
-            FileDto uploadedFiles = fileService.uploadFile(files, category );
-
+            uploadedFiles = fileService.uploadFile(file, fileDto );
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<List<FileDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<FileDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+        return new ResponseEntity<FileDto>(uploadedFiles, HttpStatus.OK);
     }
 
 

@@ -1,6 +1,7 @@
 package com.org.walk.course;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.course.dto.CourseConfigDto;
 import com.org.walk.course.dto.CourseDto;
@@ -167,7 +168,7 @@ public class CourseServiceImpl implements CourseService {
         // git에 올라가면 안됨. cloud config 등으로 바꿔야 할 수도 있음.
         String configFilePath = new CourseConfigDto().getUserHomePath()+"/walkConfig.json";
 
-        CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath),CourseConfigDto.class);
+        CourseConfigDto courseConfigDto = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false).readValue(new File(configFilePath),CourseConfigDto.class);
 
         String startY = start.substring(0,start.indexOf(","));
         String startX = start.substring(start.indexOf(",")+1,start.length());

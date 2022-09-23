@@ -47,7 +47,6 @@ public class PostController {
                 size = 1000;
             }
 
-
             System.out.println(" requested value :: " + keyword + " / " + boardId + " / " + page + " / " + size);
 
 

@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.course.CoordinatesEntity;
 import com.org.walk.course.dto.CourseConfigDto;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,13 +34,14 @@ public class FileServiceImpl implements FileService {
     FileRepository fileRepository;
 
     @Override
-    public FileDto uploadFile(File file, String category) {
+    public FileDto uploadFile(MultipartFile file, FileDto fileDto) {
 
         try {
 
             String configFilePath = System.getProperty("user.home")+"/walkConfig.json";
 
-            CourseConfigDto courseConfigDto = new ObjectMapper().readValue(new File(configFilePath), CourseConfigDto.class);
+            CourseConfigDto courseConfigDto = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false)
+                    .readValue(new File(configFilePath), CourseConfigDto.class);
 
             String accessKey = courseConfigDto.getAccessKey();
             String secretKey = courseConfigDto.getSecretKey();
@@ -47,29 +50,30 @@ public class FileServiceImpl implements FileService {
             AWSCredentials tar_credentials = new BasicAWSCredentials(accessKey, secretKey);
             AmazonS3 tar_client = AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("enpoint", "region"))
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(courseConfigDto.getEndPoint(),courseConfigDto.getRegion()))
                     .withPathStyleAccessEnabled(true).build();
 
+            File _file = new File(file.getOriginalFilename());
+            file.transferTo(_file);
 
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+file.getName(), file);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+file.getName(), _file);
             putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
             tar_client.putObject(putObjectRequest);
 
 
             // DB에 file upload 기록.
-        /*    FileEntity fileEntity = FileEntity.builder()
-                    .fileId()
-                    .fileLoc()
-                    .fileSize()
-                    .fileLatitude()
-                    .fileLongitude()
-                    .coordinatesId()
+            FileEntity fileEntity = FileEntity.builder()
+                    .fileId(null)
+                    .fileLoc(fileDto.getFileLoc())
+                    .fileSize(fileDto.getFileSize())
+                    .fileLatitude(fileDto.getFileLatitude())
+                    .fileLongitude(fileDto.getFileLongitude())
+                    .coordinatesId(fileDto.getCoordinatesId())
                     .isDeleted('N')
-                    .courseId()
-                    .build();*/
+                    .courseId(fileDto.getCourseId())
+                    .build();
 
-
-
+            fileRepository.save(fileEntity);
 
         } catch ( Exception e) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
