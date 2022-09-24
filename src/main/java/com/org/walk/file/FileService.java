@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface FileService {
 
-    FileDto uploadFile(MultipartFile file, FileDto fileDto);
+    FileDto uploadFile(MultipartFile file, FileDto fileDto) throws Exception;
 
 }
