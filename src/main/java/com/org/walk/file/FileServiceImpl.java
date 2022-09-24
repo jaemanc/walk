@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -34,7 +36,7 @@ public class FileServiceImpl implements FileService {
     FileRepository fileRepository;
 
     @Override
-    public FileDto uploadFile(MultipartFile file, FileDto fileDto) {
+    public FileDto uploadFile(MultipartFile file, FileDto fileDto) throws Exception {
 
         try {
 
@@ -47,19 +49,29 @@ public class FileServiceImpl implements FileService {
             String secretKey = courseConfigDto.getSecretKey();
             String path = courseConfigDto.getPath();
             String bucketName = courseConfigDto.getBucketName();
+            String endPoint = courseConfigDto.getEndPoint();
+            String region = courseConfigDto.getRegion();
             AWSCredentials tar_credentials = new BasicAWSCredentials(accessKey, secretKey);
-            AmazonS3 tar_client = AmazonS3ClientBuilder.standard()
+            AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(courseConfigDto.getEndPoint(),courseConfigDto.getRegion()))
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint,region))
                     .withPathStyleAccessEnabled(true).build();
 
-            File _file = new File(file.getOriginalFilename());
-            file.transferTo(_file);
+            System.out.println(file.getOriginalFilename());
 
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+file.getName(), _file);
-            putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
-            tar_client.putObject(putObjectRequest);
-
+            File _file = new File(System.getProperty("user.home") + "/" + file.getOriginalFilename());
+            // file.transferTo(_file);
+            if (_file.createNewFile()) {
+                try(FileOutputStream fos = new FileOutputStream(_file)) {
+                    fos.write(file.getBytes());
+                } catch (Exception r){
+                    System.out.println(" 파일 생성 실패.");
+                    r.printStackTrace();
+                }
+            }
+            s3Client.putObject(new PutObjectRequest(bucketName, path+_file.getName(), new File(_file.getPath())).withCannedAcl(CannedAccessControlList.Private));
+            // 전송 이후 삭제
+            _file.delete();
 
             // DB에 file upload 기록.
             FileEntity fileEntity = FileEntity.builder()
