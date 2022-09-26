@@ -43,5 +43,24 @@ public class FileController {
         return new ResponseEntity<FileDto>(uploadedFiles, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{courseId}")
+    @ApiOperation(value = "get preview File", notes = " 코스 미리보기 파일 조회 ")
+    public ResponseEntity<?>  getPreviewFile(
+            @RequestParam Long courseId
+    ) {
+
+        FileDto uploadedFiles = null;
+
+        try {
+
+            fileService.getPreviewFile(courseId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<FileDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<FileDto>(uploadedFiles, HttpStatus.OK);
+    }
+
 
 }

@@ -11,4 +11,5 @@ public interface FileService {
 
     FileDto uploadFile(MultipartFile file, FileDto fileDto) throws Exception;
 
+    FileDto getPreviewFile(Long courseId) throws Exception;
 }

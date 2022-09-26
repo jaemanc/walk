@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -24,15 +25,21 @@ public class CourseRepositoryCustom {
     private final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
     private final QFileEntity qFileEntity = QFileEntity.fileEntity;
 
-    public List<CourseDto> searchCourseByKeywordPaging(String keyword, Pageable pageable) {
+    public List<CourseDto> searchCourseByKeywordPaging(String searchType, String searchValue, String startDate, String endDate, Pageable pageable) {
 
         QCourseEntity courseEntity = QCourseEntity.courseEntity;
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (StringUtils.hasText(keyword)) {
-            builder.or(courseEntity.courseName.containsIgnoreCase(keyword));
-            builder.or(courseEntity.courseKeyword.containsIgnoreCase(keyword));
+        if (!searchValue.equals("")) {
+            if (searchType.equalsIgnoreCase("ALL") ) {
+                builder.or(courseEntity.courseName.containsIgnoreCase(searchValue));
+                builder.or(courseEntity.courseKeyword.containsIgnoreCase(searchValue));
+            } else if (searchType.equalsIgnoreCase("KEYWORD")) {
+                builder.or(courseEntity.courseKeyword.containsIgnoreCase(searchValue));
+            } else if (searchType.equalsIgnoreCase("NAME")) {
+                builder.or(courseEntity.courseName.containsIgnoreCase(searchValue));
+            }
         }
 
         return queryFactory.
@@ -50,6 +57,7 @@ public class CourseRepositoryCustom {
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(courseEntity.createdAt.desc())
                 .fetch();
 
     }

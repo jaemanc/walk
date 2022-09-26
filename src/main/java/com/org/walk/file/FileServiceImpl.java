@@ -98,4 +98,9 @@ public class FileServiceImpl implements FileService {
         return null;
     }
 
+    @Override
+    public FileDto getPreviewFile(Long courseId) throws Exception {
+        return null;
+    }
+
 }

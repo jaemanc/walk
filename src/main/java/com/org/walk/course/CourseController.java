@@ -10,11 +10,14 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,19 +38,26 @@ public class CourseController {
     @Autowired
     CourseRepository courseRepository;
 
-    @GetMapping("/search/{keyword}")
+    @GetMapping("/search")
     @ApiOperation(value = "get courses", notes = "코스 조회")
     @ApiImplicitParam(name="keyword", value = "검색 키워드")
     public ResponseEntity<?> getCourseList(
-            @PathVariable(required = false) String keyword
-            , @PageableDefault(page=0, size =10) Pageable pageable
+            @RequestParam(required = false, defaultValue = "ALL") String searchType,
+            @RequestParam(required = false, defaultValue = "") String searchValue,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @PageableDefault(page=0, size =10) Pageable pageable
     ) {
 
         List<CourseDto> courseList = null;
 
         try {
 
-            courseList = courseService.getCourseList(keyword, pageable);
+            courseList = courseService.getCourseList(searchType,searchValue, startDate, endDate, pageable);
+
+            if (ObjectUtils.isEmpty(courseList)) {
+                return new ResponseEntity<List<CourseDto>>(HttpStatus.NO_CONTENT);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +65,6 @@ public class CourseController {
         }
 
         return new ResponseEntity<List<CourseDto>>(courseList, HttpStatus.OK);
-
     }
 
     @GetMapping("/car-path/{start}/{goal}/{option}")

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CourseService {
 
-    List<CourseDto> getCourseList(String keyword, Pageable pageable) throws Exception;
+    List<CourseDto> getCourseList(String searchType, String searchValue, String startDate, String endDate, Pageable pageable) throws Exception;
 
     @Transactional
     CourseDto getCourse(long id) throws Exception;

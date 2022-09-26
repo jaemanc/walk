@@ -47,9 +47,9 @@ public class CourseServiceImpl implements CourseService {
     private CoordinatesRepository coordinatesRepository;
 
     @Override
-    public List<CourseDto> getCourseList(String keyword, Pageable pageable) throws Exception {
+    public List<CourseDto> getCourseList(String searchType, String searchValue, String startDate, String endDate, Pageable pageable) throws Exception{
 
-        List<CourseDto> courseList = courseRepositoryCustom.searchCourseByKeywordPaging(keyword,pageable);
+        List<CourseDto> courseList = courseRepositoryCustom.searchCourseByKeywordPaging(searchType, searchValue, startDate, endDate, pageable);
 
         return courseList;
     }
