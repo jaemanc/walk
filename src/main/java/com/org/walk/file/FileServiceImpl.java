@@ -9,25 +9,33 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.walk.course.CoordinatesEntity;
+import com.org.walk.course.*;
 import com.org.walk.course.dto.CourseConfigDto;
+import com.org.walk.course.dto.CourseDto;
 import com.org.walk.file.dto.FileDto;
+import com.org.walk.user.UserEntity;
+import com.querydsl.core.util.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +47,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     FileRepository fileRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     @Override
     public FileDto uploadFile(MultipartFile file, FileDto fileDto) throws Exception {
@@ -104,6 +115,15 @@ public class FileServiceImpl implements FileService {
 
             FileEntity files =  fileRepository.save(fileEntity);
 
+            Optional<CourseEntity> courseEntity = courseRepository.findById(fileDto.getCourseId());
+
+            if(courseEntity.isPresent()) {
+                CourseEntity course = courseEntity.get();
+                // course file update
+                course.updateCourseFile(files.getFileId());
+                courseRepository.save(course);
+            }
+
             System.out.println("entity inserted :: " + files.toString());
 
         } catch ( Exception e) {
@@ -118,11 +138,43 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileDto getPreviewFile(Long courseId) throws Exception {
+    public File getPreviewFile(Long courseId) throws Exception {
 
+        String configFilePath = System.getProperty("user.home")+"/walkConfig.json";
 
+        CourseConfigDto courseConfigDto = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false)
+                .readValue(new File(configFilePath), CourseConfigDto.class);
 
-        return null;
+        String accessKey = courseConfigDto.getAccessKey();
+        String secretKey = courseConfigDto.getSecretKey();
+        String path = courseConfigDto.getPath();
+        String bucketName = courseConfigDto.getBucketName();
+        String endPoint = courseConfigDto.getEndPoint();
+        String region = courseConfigDto.getRegion();
+        AWSCredentials tar_credentials = new BasicAWSCredentials(accessKey, secretKey);
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint,region))
+                .withPathStyleAccessEnabled(true).build();
+
+        FileEntity fileEntity = fileRepository.findByCourseId(courseId);
+
+        if ( ObjectUtils.isEmpty(fileEntity)) {
+            return null;
+        }
+
+        S3Object object = s3Client.getObject(bucketName, fileEntity.getFileLoc());
+
+        InputStream input = object.getObjectContent();
+
+        File tempFile = File.createTempFile(fileEntity.getFileLoc().substring(fileEntity.getFileLoc().lastIndexOf("/"),fileEntity.getFileLoc().length()),"");
+        tempFile.deleteOnExit();
+
+        Path path_t = Paths.get(tempFile.getPath());
+
+        Files.copy(input, path_t, StandardCopyOption.REPLACE_EXISTING);
+
+        return tempFile;
     }
 
 }

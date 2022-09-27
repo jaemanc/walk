@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Set;
 
@@ -41,6 +42,8 @@ public class CourseDto {
     private CoordinatesDto coordinates;
 
     private Set<FileEntity> files;
+
+    private File file;
 
     @QueryProjection
     public CourseDto(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt) {

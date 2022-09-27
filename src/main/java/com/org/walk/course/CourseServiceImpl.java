@@ -61,9 +61,12 @@ public class CourseServiceImpl implements CourseService {
 
         Set<FileEntity> files = new HashSet<>();
         for (int i=0;  i<courseList.size(); i++ ) {
-            FileEntity fileEntity = FileMapper.mapper.toEntity(fileService.getPreviewFile(courseList.get(i).getCourseId()));
-            files.add(fileEntity);
-            courseList.get(i).setFiles(files);
+            File file = fileService.getPreviewFile(courseList.get(i).getCourseId());
+
+            if (file == null) {
+                continue;
+            }
+            courseList.get(i).setFile(file);
         }
 
         return courseList;

@@ -9,19 +9,21 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor
 @Table(name="tb_course")
 @DynamicUpdate
-@ToString
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
+@ToString
 public class CourseEntity {
 
     @Id
@@ -52,6 +54,7 @@ public class CourseEntity {
 
     @CreatedDate
     @Column(name="created_at")
+    @Comment("업로드 날짜")
     private Date createdAt;
 
     @Column(name="creater_id")
@@ -96,4 +99,12 @@ public class CourseEntity {
         this.user = user;
         this.coordinates = coordinates;
     }
+
+    public void updateCourseFile(Long fileId) {
+        if (!ObjectUtils.isEmpty(fileId)) {
+            this.fileId = fileId;
+        }
+    }
+
+
 }
