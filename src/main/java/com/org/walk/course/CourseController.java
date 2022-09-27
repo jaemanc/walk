@@ -39,8 +39,7 @@ public class CourseController {
     CourseRepository courseRepository;
 
     @GetMapping("/search")
-    @ApiOperation(value = "get courses", notes = "코스 조회")
-    @ApiImplicitParam(name="keyword", value = "검색 키워드")
+    @ApiOperation(value = "get courses search", notes = "코스 검색 조회")
     public ResponseEntity<?> getCourseList(
             @RequestParam(required = false, defaultValue = "ALL") String searchType,
             @RequestParam(required = false, defaultValue = "") String searchValue,

@@ -9,6 +9,13 @@ import com.org.walk.course.dto.CoursePathDto;
 import com.org.walk.course.dto.CoursePostDto;
 import com.org.walk.course.mapper.CoordinatesMapper;
 import com.org.walk.course.mapper.CourseMapper;
+import com.org.walk.file.FileEntity;
+import com.org.walk.file.FileService;
+import com.org.walk.file.FileServiceImpl;
+import com.org.walk.file.dto.FileDto;
+import com.org.walk.file.mapper.FileMapper;
+import com.org.walk.user.UserEntity;
+import com.org.walk.user.mapper.UserMapper;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.json.simple.JSONArray;
@@ -30,9 +37,7 @@ import reactor.netty.http.client.HttpClient;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.net.http.HttpHeaders;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -46,10 +51,20 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private CoordinatesRepository coordinatesRepository;
 
+    @Autowired
+    private FileServiceImpl fileService;
+
     @Override
     public List<CourseDto> getCourseList(String searchType, String searchValue, String startDate, String endDate, Pageable pageable) throws Exception{
 
         List<CourseDto> courseList = courseRepositoryCustom.searchCourseByKeywordPaging(searchType, searchValue, startDate, endDate, pageable);
+
+        Set<FileEntity> files = new HashSet<>();
+        for (int i=0;  i<courseList.size(); i++ ) {
+            FileEntity fileEntity = FileMapper.mapper.toEntity(fileService.getPreviewFile(courseList.get(i).getCourseId()));
+            files.add(fileEntity);
+            courseList.get(i).setFiles(files);
+        }
 
         return courseList;
     }

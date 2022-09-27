@@ -26,6 +26,4 @@ public class CoordinatesDto {
 
     private long stopoverLongitude;
 
-    private Set<FileEntity> files;
-
 }

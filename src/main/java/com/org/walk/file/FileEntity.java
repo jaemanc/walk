@@ -18,6 +18,7 @@ import java.util.Date;
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class FileEntity {
 
     @Id
@@ -55,10 +56,6 @@ public class FileEntity {
     @Comment("파일 경도")
     private String fileLongitude;
 
-    @Column(name="coordinates_id")
-    @Comment("좌표 ID")
-    private Long coordinatesId;
-
     @Column(name="course_id")
     @Comment("코스 ID")
     private Long courseId;
@@ -68,7 +65,7 @@ public class FileEntity {
     private CourseEntity course;
 
     @Builder
-    public FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long coordinatesId, Long courseId, CourseEntity course) {
+    public FileEntity(Long fileId, Long fileSize, Date uploadDate, String fileLoc, Character isDeleted, Long userId, String fileLatitude, String fileLongitude, Long courseId, CourseEntity course) {
         this.fileId = fileId;
         this.fileSize = fileSize;
         this.uploadDate = uploadDate;
@@ -77,7 +74,6 @@ public class FileEntity {
         this.userId = userId;
         this.fileLatitude = fileLatitude;
         this.fileLongitude = fileLongitude;
-        this.coordinatesId = coordinatesId;
         this.courseId = courseId;
         this.course = course;
     }

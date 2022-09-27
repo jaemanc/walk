@@ -49,9 +49,9 @@ public class CoordinatesEntity {
     @Column(name = "transit_route", columnDefinition = "text")
     private String transitRoute;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+  /*  @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="coordinates_id", referencedColumnName = "coordinates_id")
-    private Set<FileEntity> files;
+    private Set<FileEntity> files;*/
 
     @Comment("소요_시간")
     @Column(name = "required_time")
@@ -62,14 +62,13 @@ public class CoordinatesEntity {
     private Long distance;
 
     @Builder
-    public CoordinatesEntity(Long coordinatesId, String startLatitude, String startLongitude, String destLatitude, String destLongitude, String transitRoute, Set<FileEntity> files, Long requiredTime, long distance) {
+    public CoordinatesEntity(Long coordinatesId, String startLatitude, String startLongitude, String destLatitude, String destLongitude, String transitRoute, Long requiredTime, long distance) {
         this.coordinatesId = coordinatesId;
         this.startLatitude = startLatitude;
         this.startLongitude = startLongitude;
         this.destLatitude = destLatitude;
         this.destLongitude = destLongitude;
         this.transitRoute = transitRoute;
-        this.files = files;
         this.requiredTime = requiredTime;
         this.distance = distance;
     }

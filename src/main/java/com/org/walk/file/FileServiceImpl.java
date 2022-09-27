@@ -8,6 +8,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+import com.amazonaws.services.s3.transfer.Upload;
+import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.walk.course.CoordinatesEntity;
@@ -57,8 +62,6 @@ public class FileServiceImpl implements FileService {
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint,region))
                     .withPathStyleAccessEnabled(true).build();
 
-            System.out.println(file.getOriginalFilename());
-
             File _file = new File(System.getProperty("user.home") + "/" + file.getOriginalFilename());
             // file.transferTo(_file);
             if (_file.createNewFile()) {
@@ -69,23 +72,39 @@ public class FileServiceImpl implements FileService {
                     r.printStackTrace();
                 }
             }
-            s3Client.putObject(new PutObjectRequest(bucketName, path+_file.getName(), new File(_file.getPath())).withCannedAcl(CannedAccessControlList.Private));
+
+            File targetFile = new File(_file.getPath());
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+_file.getName()+_file.getName(), targetFile);
+            putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
+
+//          PutObjectResult result = s3Client.putObject(putObjectRequest);
+//          System.out.println("meta data :: " + result.getMetadata());
+
+            TransferManager tm = TransferManagerBuilder.standard()
+                    .withS3Client(s3Client)
+                    .build();
+
+            Upload upload = tm.upload(bucketName, path+_file.getName(), new File(_file.getPath()));
+
             // 전송 이후 삭제
             _file.delete();
 
             // DB에 file upload 기록.
             FileEntity fileEntity = FileEntity.builder()
                     .fileId(null)
-                    .fileLoc(fileDto.getFileLoc())
+                    .fileLoc(path+_file.getName())
                     .fileSize(fileDto.getFileSize())
                     .fileLatitude(fileDto.getFileLatitude())
                     .fileLongitude(fileDto.getFileLongitude())
-                    .coordinatesId(fileDto.getCoordinatesId())
+                    //.coordinatesId(fileDto.getCoordinatesId())
                     .isDeleted('N')
                     .courseId(fileDto.getCourseId())
+                    .userId(fileDto.getUserId())
                     .build();
 
-            fileRepository.save(fileEntity);
+            FileEntity files =  fileRepository.save(fileEntity);
+
+            System.out.println("entity inserted :: " + files.toString());
 
         } catch ( Exception e) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -100,6 +119,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileDto getPreviewFile(Long courseId) throws Exception {
+
+
+
         return null;
     }
 

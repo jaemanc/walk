@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Api(tags={"FileController"})
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 @Controller
 @RequestMapping("/file")
 public class FileController {
@@ -37,7 +39,11 @@ public class FileController {
             uploadedFiles = fileService.uploadFile(file, fileDto );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream pinrtStream = new PrintStream(out);
+            e.printStackTrace(pinrtStream);
+            System.out.println(out.toString());
+            log_error.error(e.getStackTrace());
             return new ResponseEntity<FileDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<FileDto>(uploadedFiles, HttpStatus.OK);
