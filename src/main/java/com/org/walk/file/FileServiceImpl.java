@@ -1,15 +1,13 @@
 package com.org.walk.file;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -32,10 +30,12 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,7 +138,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getPreviewFile(Long courseId) throws Exception {
+    public String getPreviewFile(Long courseId) throws Exception {
 
         String configFilePath = System.getProperty("user.home")+"/walkConfig.json";
 
@@ -163,18 +163,29 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        S3Object object = s3Client.getObject(bucketName, fileEntity.getFileLoc());
+        boolean flag = s3Client.doesObjectExist(bucketName, fileEntity.getFileLoc());
 
-        InputStream input = object.getObjectContent();
+        String filePath = "";
+        if (flag) {
+            Date expiration = new Date();
+            long expTimeMillis = expiration.getTime();
+            expTimeMillis += 1000 * 60 * 60; // 1시간
+            expiration.setTime(expTimeMillis);
 
-        File tempFile = File.createTempFile(fileEntity.getFileLoc().substring(fileEntity.getFileLoc().lastIndexOf("/"),fileEntity.getFileLoc().length()),"");
-        tempFile.deleteOnExit();
+            // Generate the pre-signed URL.
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, fileEntity.getFileLoc())
+                    .withMethod(HttpMethod.GET)
+                    .withExpiration(expiration);
 
-        Path path_t = Paths.get(tempFile.getPath());
+            URL presignpath = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
 
-        Files.copy(input, path_t, StandardCopyOption.REPLACE_EXISTING);
+            filePath = presignpath.toString();
 
-        return tempFile;
+        } else {
+            log_error.info("S3의 파일이 존재하지 않습니다. course id : " + courseId);
+        }
+
+        return filePath;
     }
 
 }

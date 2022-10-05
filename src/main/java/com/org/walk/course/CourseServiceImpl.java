@@ -61,12 +61,12 @@ public class CourseServiceImpl implements CourseService {
 
         Set<FileEntity> files = new HashSet<>();
         for (int i=0;  i<courseList.size(); i++ ) {
-            File file = fileService.getPreviewFile(courseList.get(i).getCourseId());
+            String filePath = fileService.getPreviewFile(courseList.get(i).getCourseId());
 
-            if (file == null) {
+            if (filePath == null) {
                 continue;
             }
-            courseList.get(i).setFile(file);
+            courseList.get(i).setFilePath(filePath);
         }
 
         return courseList;

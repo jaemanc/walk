@@ -45,6 +45,8 @@ public class CourseDto {
 
     private File file;
 
+    private String filePath;
+
     @QueryProjection
     public CourseDto(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt) {
         this.courseId = courseId;
