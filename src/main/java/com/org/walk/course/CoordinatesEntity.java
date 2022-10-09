@@ -1,10 +1,7 @@
 package com.org.walk.course;
 
 import com.org.walk.file.FileEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -22,6 +19,7 @@ import java.util.Set;
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class CoordinatesEntity {
 
     @Id

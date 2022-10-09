@@ -5,6 +5,7 @@ import com.org.walk.course.dto.QCourseDto;
 import com.org.walk.file.QFileEntity;
 import com.org.walk.user.QUserEntity;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +43,7 @@ public class CourseRepositoryCustom {
             }
         }
 
-        return queryFactory.
+        /*return queryFactory.
                 select(new QCourseDto(
                         courseEntity.courseId
                         ,courseEntity.coordinates_id
@@ -54,6 +55,27 @@ public class CourseRepositoryCustom {
                         ,courseEntity.updatedAt
                 ))
                 .from(courseEntity)
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(courseEntity.createdAt.desc())
+                .fetch();*/
+
+        return queryFactory
+                .select(Projections.fields(CourseDto.class
+                    ,qCourseEntity.user.name.as("userName")
+                    ,qCourseEntity.courseId
+                    ,qCourseEntity.coordinates_id
+                    ,qCourseEntity.courseName
+                    ,qCourseEntity.courseKeyword
+                    ,qCourseEntity.userId
+                    ,qCourseEntity.isDeleted
+                    ,qCourseEntity.updater
+                    ,qCourseEntity.updatedAt
+                ))
+                .from(qCourseEntity)
+                .join(qUserEntity).on(qCourseEntity.userId.eq(qUserEntity.userId))
+                .fetchJoin()
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

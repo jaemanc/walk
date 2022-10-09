@@ -23,6 +23,11 @@ public class CoordinatesPostDto {
 
     private String stopoverLongitude;
 
+    private Long requiredTime;
+
     private String transitRoute;
+
+    private Long distance;
+
 
 }

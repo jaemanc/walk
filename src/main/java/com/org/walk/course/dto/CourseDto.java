@@ -1,5 +1,6 @@
 package com.org.walk.course.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.org.walk.course.CoordinatesEntity;
 import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
@@ -33,9 +34,12 @@ public class CourseDto {
 
     private String updater;
 
+    @JsonFormat(pattern = "yyyy:MM:dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updatedAt;
 
     private long fileId;
+
+    private String userName;
 
     private UserEntity user;
 

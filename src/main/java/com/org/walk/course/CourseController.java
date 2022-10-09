@@ -1,5 +1,6 @@
 package com.org.walk.course;
 
+import com.org.walk.course.dto.CoordinatesDto;
 import com.org.walk.course.dto.CourseDto;
 import com.org.walk.course.dto.CoursePathDto;
 import com.org.walk.course.dto.CoursePostDto;
@@ -120,6 +121,13 @@ public class CourseController {
             if(!StringUtils.hasText(start) || !StringUtils.hasText(goal) ) {
                 // 없거나, 위도, 경도 값이 터무니 없이 큰 경우
                 // ex) 우리나라 위도,경도에 해당하지 않는 경우.
+                // 위도 : 33 ~ 43 / 경도 124 ~ 132
+
+                int _start = Integer.parseInt(start);
+                int _goal = Integer.parseInt(goal);
+                if ( _start > 43 || _start < 33 || _goal < 124 || _goal > 132) {
+                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+                }
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -174,8 +182,6 @@ public class CourseController {
         CourseDto courseDto = null;
 
         try {
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,6 +271,31 @@ public class CourseController {
 
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/coordinates/{id}")
+    @ApiOperation(value = "get course",  notes ="코스 조회")
+    @ApiImplicitParam(name="id", required = true, dataType = "long", value ="coordinates ID", example = "0")
+    public ResponseEntity<CoordinatesDto> getCoordinates(
+            @PathVariable Long id
+    ) {
+
+        CoordinatesDto coordinatesDto = null;
+
+        try {
+
+            coordinatesDto = courseService.getCoordinates(id);
+
+            if (ObjectUtils.isEmpty(coordinatesDto)) {
+                return new ResponseEntity<CoordinatesDto>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<CoordinatesDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CoordinatesDto>(coordinatesDto, HttpStatus.OK);
     }
 
 

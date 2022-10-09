@@ -14,16 +14,22 @@ public class CoordinatesDto {
 
     private long coordinatesId;
 
-    private long startLatitude;
+    private String startLatitude;
 
-    private long startLongitude;
+    private String startLongitude;
 
-    private long destLatitude;
+    private String destLatitude;
 
-    private long destLongitude;
+    private String destLongitude;
 
-    private long stopoverLatitude;
+    private String stopoverLatitude;
 
-    private long stopoverLongitude;
+    private String stopoverLongitude;
+
+    private Long requiredTime;
+
+    private String transitRoute;
+
+    private Long distance;
 
 }

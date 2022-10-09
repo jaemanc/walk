@@ -3,10 +3,7 @@ package com.org.walk.course;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.org.walk.course.dto.CourseConfigDto;
-import com.org.walk.course.dto.CourseDto;
-import com.org.walk.course.dto.CoursePathDto;
-import com.org.walk.course.dto.CoursePostDto;
+import com.org.walk.course.dto.*;
 import com.org.walk.course.mapper.CoordinatesMapper;
 import com.org.walk.course.mapper.CourseMapper;
 import com.org.walk.file.FileEntity;
@@ -18,6 +15,8 @@ import com.org.walk.user.UserEntity;
 import com.org.walk.user.mapper.UserMapper;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -42,6 +41,9 @@ import java.util.*;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    private final Logger log_error = LogManager.getLogger("com.error");
+    private final Logger log_course = LogManager.getLogger("com.course");
+
     @Autowired
     private CourseRepositoryCustom courseRepositoryCustom;
 
@@ -61,6 +63,10 @@ public class CourseServiceImpl implements CourseService {
 
         Set<FileEntity> files = new HashSet<>();
         for (int i=0;  i<courseList.size(); i++ ) {
+
+            System.out.println(" 해치웠나..?! " + courseList.get(i).getUserName());
+
+
             String filePath = fileService.getPreviewFile(courseList.get(i).getCourseId());
 
             if (filePath == null) {
@@ -209,10 +215,12 @@ public class CourseServiceImpl implements CourseService {
                 .bodyToMono(String.class)// 응답 값을 하나만,
                 .block(); // 동기로 받는다.
 
-        System.out.println(" 리턴 값 : " + response);
 
         if (response.contains("Exceeded limit on max bytes to buffer")) {
-            System.out.println(" 너무 먼 거리는 찾을 수가 없어.. 그거는 도와줄 수가 없어...");
+            // System.out.println(" 너무 먼 거리는 찾을 수가 없어.. 그거는 도와줄 수가 없어...");
+            log_course.info(" 너무 먼거리라 API 동작이 안된다고 하네요..?");
+
+
             return null;
         }
 
@@ -252,7 +260,26 @@ public class CourseServiceImpl implements CourseService {
 
         }
 
-
         return new CoursePathDto(transitCoordinates, allTime, totalDistance);
     }
+
+    @Override
+    public CoordinatesDto getCoordinates(Long id) throws Exception {
+
+        Optional<CoordinatesEntity> coordinatesEntity = coordinatesRepository.findById(id);
+
+        System.out.println("########################");
+        System.out.println(coordinatesEntity.toString());
+        System.out.println("########################");
+        if(coordinatesEntity.isPresent()) {
+            CoordinatesEntity coordinates = coordinatesEntity.get();
+            CoordinatesDto coordinatesDto = CoordinatesMapper.mapper.toDto(coordinates);
+
+            return coordinatesDto;
+        }
+
+        return null;
+    }
+
+
 }

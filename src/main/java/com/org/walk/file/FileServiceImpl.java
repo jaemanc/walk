@@ -1,6 +1,8 @@
 package com.org.walk.file;
 
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.HttpMethod;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -152,10 +154,19 @@ public class FileServiceImpl implements FileService {
         String endPoint = courseConfigDto.getEndPoint();
         String region = courseConfigDto.getRegion();
         AWSCredentials tar_credentials = new BasicAWSCredentials(accessKey, secretKey);
+
+        // 요청시 Connection timeout 5초 지정
+        /*ClientConfiguration clientConfiguration = new ClientConfiguration().withConnectionTimeout(2000);
+        clientConfiguration.setSocketTimeout(2000);*/
+
+        boolean flag = false;
+
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(tar_credentials))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint,region))
-                .withPathStyleAccessEnabled(true).build();
+                .withPathStyleAccessEnabled(true)
+                .withClientConfiguration(new ClientConfiguration().withConnectionTimeout(2000).withSocketTimeout(1000))
+                .build();
 
         FileEntity fileEntity = fileRepository.findByCourseId(courseId);
 
@@ -163,7 +174,16 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        boolean flag = s3Client.doesObjectExist(bucketName, fileEntity.getFileLoc());
+        try {
+
+            flag = s3Client.doesObjectExist(bucketName, fileEntity.getFileLoc());
+
+        } catch ( SdkClientException r) {
+            log_error.info(" S3 오브젝트 조회 실패 >> COURSE ID [ " + courseId + " ]");
+            return null;
+        } catch (Exception t ) {
+            log_error.info(t.getMessage() + " 에러 발생했습니다. ");
+        }
 
         String filePath = "";
         if (flag) {

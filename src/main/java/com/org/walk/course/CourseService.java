@@ -1,6 +1,7 @@
 package com.org.walk.course;
 
 
+import com.org.walk.course.dto.CoordinatesDto;
 import com.org.walk.course.dto.CourseDto;
 import com.org.walk.course.dto.CoursePathDto;
 import com.org.walk.course.dto.CoursePostDto;
@@ -25,5 +26,7 @@ public interface CourseService {
     String getDirectionsApi(String start, String goal, String option) throws Exception;
 
     CoursePathDto getWalkPathApi(String start, String goal) throws Exception;
+
+    CoordinatesDto getCoordinates(Long id) throws Exception;
 
 }
