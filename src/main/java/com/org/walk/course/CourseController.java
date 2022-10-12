@@ -235,6 +235,31 @@ public class CourseController {
 
     }
 
+    @GetMapping(value = "/coordinates/{id}")
+    @ApiOperation(value = "get course",  notes ="코스 조회")
+    @ApiImplicitParam(name="id", required = true, dataType = "long", value ="coordinates ID", example = "0")
+    public ResponseEntity<CoordinatesDto> getCoordinates(
+            @PathVariable Long id
+    ) {
+
+        CoordinatesDto coordinatesDto = null;
+
+        try {
+
+            coordinatesDto = courseService.getCoordinates(id);
+
+            if (ObjectUtils.isEmpty(coordinatesDto)) {
+                return new ResponseEntity<CoordinatesDto>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<CoordinatesDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CoordinatesDto>(coordinatesDto, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/dummy")
     @ApiOperation(value = "course dummy..." , notes = " 코스 더미 등록 ")
     public ResponseEntity<?> dummyCourse (
@@ -272,32 +297,5 @@ public class CourseController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping(value = "/coordinates/{id}")
-    @ApiOperation(value = "get course",  notes ="코스 조회")
-    @ApiImplicitParam(name="id", required = true, dataType = "long", value ="coordinates ID", example = "0")
-    public ResponseEntity<CoordinatesDto> getCoordinates(
-            @PathVariable Long id
-    ) {
-
-        CoordinatesDto coordinatesDto = null;
-
-        try {
-
-            coordinatesDto = courseService.getCoordinates(id);
-
-            if (ObjectUtils.isEmpty(coordinatesDto)) {
-                return new ResponseEntity<CoordinatesDto>(HttpStatus.NOT_FOUND);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<CoordinatesDto>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<CoordinatesDto>(coordinatesDto, HttpStatus.OK);
-    }
-
-
 
 }

@@ -11,7 +11,7 @@
     <!--<property name="LOG_FILE_NAME" value=""/>-->
     <!--<property name="ERR_LOG_FILE_NAME" value="err_log"/>-->
 
-    <property name="LOG_PATH" value="D:/app/walk"/>
+    <property name="LOG_PATH" value="C:/app/walk"/>
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

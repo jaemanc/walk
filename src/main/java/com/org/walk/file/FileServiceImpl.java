@@ -168,7 +168,7 @@ public class FileServiceImpl implements FileService {
                 .withClientConfiguration(new ClientConfiguration().withConnectionTimeout(2000).withSocketTimeout(1000))
                 .build();
 
-        FileEntity fileEntity = fileRepository.findByCourseId(courseId);
+        FileEntity fileEntity = fileRepository.findFirstByCourseIdOrderByUploadDateDesc(courseId);
 
         if ( ObjectUtils.isEmpty(fileEntity)) {
             return null;

@@ -8,4 +8,6 @@ public interface FileRepository extends JpaRepository<FileEntity, Long> {
 
     FileEntity findByCourseId(Long courseId);
 
+    FileEntity findFirstByCourseIdOrderByUploadDateDesc(Long courseId);
+
 }
