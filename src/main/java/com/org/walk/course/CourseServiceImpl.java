@@ -268,9 +268,6 @@ public class CourseServiceImpl implements CourseService {
 
         Optional<CoordinatesEntity> coordinatesEntity = coordinatesRepository.findById(id);
 
-        System.out.println("########################");
-        System.out.println(coordinatesEntity.toString());
-        System.out.println("########################");
         if(coordinatesEntity.isPresent()) {
             CoordinatesEntity coordinates = coordinatesEntity.get();
             CoordinatesDto coordinatesDto = CoordinatesMapper.mapper.toDto(coordinates);

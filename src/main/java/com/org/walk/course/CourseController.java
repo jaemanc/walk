@@ -236,7 +236,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/coordinates/{id}")
-    @ApiOperation(value = "get course",  notes ="코스 조회")
+    @ApiOperation(value = "get course",  notes ="코스 좌표 조회")
     @ApiImplicitParam(name="id", required = true, dataType = "long", value ="coordinates ID", example = "0")
     public ResponseEntity<CoordinatesDto> getCoordinates(
             @PathVariable Long id
@@ -268,14 +268,6 @@ public class CourseController {
         try {
 
             for (int i = 0 ; i < 1000; i ++ ) {
-//                CourseEntity courseEntity = CourseEntity.builder()
-//                        .name("name"+i)
-//                        .address("addr"+i)
-//                        .phone("phone"+i)
-//                        .email("email"+i+"@gmail.com")
-//                        .password("passwd"+i)
-//                        .build();
-
                 CourseDto courseDto = new CourseDto();
 
                 courseDto.setCourseKeyword("Course_keyword_"+i);
