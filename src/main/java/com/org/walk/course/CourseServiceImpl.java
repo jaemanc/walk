@@ -106,7 +106,7 @@ public class CourseServiceImpl implements CourseService {
         CourseEntity courseEntity = CourseEntity.builder()
                 .courseName(coursePostDto.getCourseName())
                 .courseKeyword(coursePostDto.getCourseKeyword())
-                .coordinates_id(coordinatesEntity.getCoordinatesId())
+                .coordinatesId(coordinatesEntity.getCoordinatesId())
                 .userId(coursePostDto.getUserId())
                 .createrId(coursePostDto.getUserId())
                 .isDeleted('N')
@@ -218,8 +218,7 @@ public class CourseServiceImpl implements CourseService {
 
         if (response.contains("Exceeded limit on max bytes to buffer")) {
             // System.out.println(" 너무 먼 거리는 찾을 수가 없어.. 그거는 도와줄 수가 없어...");
-            log_course.info(" 너무 먼거리라 API 동작이 안된다고 하네요..?");
-
+            log_course.info(" 너무 먼거리라 API 동작이 어렵습니다.");
 
             return null;
         }

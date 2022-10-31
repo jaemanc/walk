@@ -22,7 +22,7 @@ public class CourseDto {
 
     private long courseId;
 
-    private long coordinates_id;
+    private long coordinatesId;
 
     private String courseName;
 
@@ -52,9 +52,9 @@ public class CourseDto {
     private String filePath;
 
     @QueryProjection
-    public CourseDto(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt) {
+    public CourseDto(long courseId, long coordinatesId, String courseName, String courseKeyword, long userId, Character isDeleted, String updater, Date updatedAt) {
         this.courseId = courseId;
-        this.coordinates_id = coordinates_id;
+        this.coordinatesId = coordinatesId;
         this.courseName = courseName;
         this.courseKeyword = courseKeyword;
         this.userId = userId;

@@ -1,6 +1,7 @@
 package com.org.walk.course;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.org.walk.file.FileEntity;
 import com.org.walk.user.UserEntity;
 import lombok.*;
@@ -19,11 +20,15 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name="tb_course")
+@Table(name="tb_course"
+    ,indexes = {@Index(name="index_course_id", columnList = "course_id")
+                ,@Index(name="index_coordinates_id", columnList = "coordinates_id")}
+)
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CourseEntity {
 
     @Id
@@ -34,7 +39,7 @@ public class CourseEntity {
 
     @Column(name = "coordinates_id")
     @Comment("좌표 ID")
-    private long coordinates_id;
+    private long coordinatesId;
 
     @Column(name = "course_name", length = 50)
     @Comment("코스 이름")
@@ -82,11 +87,11 @@ public class CourseEntity {
     private CoordinatesEntity coordinates;
 
     @Builder
-    public CourseEntity(long courseId, long coordinates_id, String courseName, String courseKeyword, long userId, Character isDeleted,
+    public CourseEntity(long courseId, long coordinatesId, String courseName, String courseKeyword, long userId, Character isDeleted,
                         Date createdAt, long createrId, String updater, Date updatedAt,Long fileId, UserEntity user, CoordinatesEntity coordinates
     ) {
         this.courseId = courseId;
-        this.coordinates_id = coordinates_id;
+        this.coordinatesId = coordinatesId;
         this.courseName = courseName;
         this.courseKeyword = courseKeyword;
         this.fileId = fileId;

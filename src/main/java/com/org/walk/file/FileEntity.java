@@ -1,5 +1,6 @@
 package com.org.walk.file;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.org.walk.course.CourseEntity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -14,11 +15,15 @@ import java.util.Date;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name="tb_file")
+@Table(name="tb_file"
+        , indexes = {@Index(name="index_file_id", columnList = "file_id")
+                    ,@Index(name="index_course_id", columnList = "course_id")}
+)
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FileEntity {
 
     @Id

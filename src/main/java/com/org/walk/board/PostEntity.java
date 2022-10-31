@@ -19,7 +19,8 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="tb_post")
+@Table(name="tb_post",
+        indexes = {@Index(name="index_post_id", columnList = "post_id")})
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)

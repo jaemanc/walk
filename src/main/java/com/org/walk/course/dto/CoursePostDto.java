@@ -16,7 +16,7 @@ public class CoursePostDto {
 
     private long courseId;
 
-    private long coordinates_id;
+    private long coordinatesId;
 
     private String courseName;
 

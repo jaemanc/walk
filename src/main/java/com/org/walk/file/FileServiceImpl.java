@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
@@ -90,43 +91,42 @@ public class FileServiceImpl implements FileService {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path+_file.getName()+_file.getName(), targetFile);
             putObjectRequest.withCannedAcl(CannedAccessControlList.Private);
 
-//          PutObjectResult result = s3Client.putObject(putObjectRequest);
-//          System.out.println("meta data :: " + result.getMetadata());
-
             TransferManager tm = TransferManagerBuilder.standard()
                     .withS3Client(s3Client)
                     .build();
 
             Upload upload = tm.upload(bucketName, path+_file.getName(), new File(_file.getPath()));
 
-            // 전송 이후 삭제
-            _file.delete();
+            if (upload.isDone()) {
+                // 전송 이후 삭제
+                _file.delete();
 
-            // DB에 file upload 기록.
-            FileEntity fileEntity = FileEntity.builder()
-                    .fileId(null)
-                    .fileLoc(path+_file.getName())
-                    .fileSize(fileDto.getFileSize())
-                    .fileLatitude(fileDto.getFileLatitude())
-                    .fileLongitude(fileDto.getFileLongitude())
-                    //.coordinatesId(fileDto.getCoordinatesId())
-                    .isDeleted('N')
-                    .courseId(fileDto.getCourseId())
-                    .userId(fileDto.getUserId())
-                    .build();
+                // DB에 file upload 기록.
+                FileEntity fileEntity = FileEntity.builder()
+                        .fileId(null)
+                        .fileLoc(path+_file.getName())
+                        .fileSize(fileDto.getFileSize())
+                        .fileLatitude(fileDto.getFileLatitude())
+                        .fileLongitude(fileDto.getFileLongitude())
+                        //.coordinatesId(fileDto.getCoordinatesId())
+                        .isDeleted('N')
+                        .courseId(fileDto.getCourseId())
+                        .userId(fileDto.getUserId())
+                        .build();
 
-            FileEntity files =  fileRepository.save(fileEntity);
+                FileEntity files =  fileRepository.save(fileEntity);
 
-            Optional<CourseEntity> courseEntity = courseRepository.findById(fileDto.getCourseId());
+                Optional<CourseEntity> courseEntity = courseRepository.findById(fileDto.getCourseId());
 
-            if(courseEntity.isPresent()) {
-                CourseEntity course = courseEntity.get();
-                // course file update
-                course.updateCourseFile(files.getFileId());
-                courseRepository.save(course);
+                if(courseEntity.isPresent()) {
+                    CourseEntity course = courseEntity.get();
+                    // course file update
+                    course.updateCourseFile(files.getFileId());
+                    courseRepository.save(course);
+                }
+            } else {
+                log_file.info("File 등록 실패 : " + fileDto.getCourseId());
             }
-
-            System.out.println("entity inserted :: " + files.toString());
 
         } catch ( Exception e) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -206,6 +206,20 @@ public class FileServiceImpl implements FileService {
         }
 
         return filePath;
+    }
+
+    @Override
+    public String getPreviewFiles(Long courseId, Pageable pageable) throws Exception {
+
+        // courseId 값에 해당하는 이미지 파일 목록 페이징 처리.
+
+        // 1. 페이지 목록 + 사이즈에 따라 DB 값을 조회
+        // 2. 조회한 목록만큼의 값으로 s3 스토리지의 이미지 파일 URL을 리턴한다.
+
+
+
+
+        return null;
     }
 
 }

@@ -35,7 +35,6 @@ public class PostController {
             ,@RequestParam(required = false, defaultValue = "0") long boardId
             ,@RequestParam(required = false, defaultValue = "0" ) int page
             ,@RequestParam(required = false, defaultValue = "0") int size
-
     ) {
 
         List<PostListResponseDto> postList = null;
@@ -46,9 +45,6 @@ public class PostController {
                 // 0값일 경우 max 사이즈 지정.
                 size = 1000;
             }
-
-            System.out.println(" requested value :: " + keyword + " / " + boardId + " / " + page + " / " + size);
-
 
             Pageable pageable = PageRequest.of(page, size);
 

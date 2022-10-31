@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -60,6 +62,29 @@ public class FileController {
         try {
 
             fileService.getPreviewFile(courseId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<FileDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<FileDto>(uploadedFiles, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{courseId}/list")
+    @ApiOperation(value = "get preview File", notes = "코스 파일 목록 조회 ")
+    public ResponseEntity<?>  getPreviewFileList(
+            @RequestParam Long courseId,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        
+        FileDto uploadedFiles = null;
+
+        try {
+            
+            Pageable pageable = PageRequest.of(page, size);
+
+            fileService.getPreviewFiles(courseId, pageable);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.org.walk.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.org.walk.file.FileEntity;
 import com.org.walk.file.mapper.FileMapper;
 import com.org.walk.user.dto.UserDto;
@@ -22,10 +23,12 @@ import java.util.Set;
 @ToString(exclude = "password")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="tb_user")
+@Table(name="tb_user"
+        ,indexes = {@Index(name="index_user_id", columnList = "user_id")})
 @DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserEntity {
 
     @Id
@@ -63,7 +66,7 @@ public class UserEntity {
     @Column(name="date_birth")
     private Date dateBirth;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "userEntity")
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private Set<FileEntity> file;
 
